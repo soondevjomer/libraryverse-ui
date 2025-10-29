@@ -1,0 +1,71 @@
+<div
+  class="flex flex-col h-full bg-[var(--color-brand4)] border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+>
+
+  <!-- Library Cover -->
+  <div class="flex-shrink-0">
+    <img
+      [src]="library.libraryCover ? baseUrl + library.libraryCover : defaultLibraryCover"
+      [alt]="library.name || 'Default library cover'"
+      class="w-full md:w-40 lg:w-full h-56 md:h-full lg:h-70 object-contain bg-[var(--color-brand6)] p-2"
+    />
+  </div>
+
+  <!-- Library Info -->
+  <div class="flex flex-col justify-between flex-1 p-4">
+    <div class="flex flex-col gap-1">
+      <h3
+        class="font-bold text-[var(--color-brand1)] text-lg leading-tight truncate"
+        [title]="library.name || 'Unnamed Library'"
+      >
+        <lucide-icon name="building" class="inline w-4 h-4 mr-1 text-[var(--color-brand2)]"></lucide-icon>
+        {{ library.name || 'Unnamed Library' }}
+      </h3>
+
+      <p class="text-sm text-gray-700 truncate" [title]="library.ownerName || 'Unknown'">
+        <lucide-icon name="user" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
+        <span class="font-medium">Owner:</span> {{ library.ownerName || 'Unknown' }}
+      </p>
+
+      <p class="text-sm text-gray-700 truncate" [title]="library.contactNumber || 'No contact provided'">
+        <lucide-icon name="phone" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
+        <span class="font-medium">Contact:</span> {{ library.contactNumber || 'No contact provided' }}
+      </p>
+
+      <p class="text-sm text-gray-700 truncate" [title]="library.address || 'No address provided'">
+        <lucide-icon name="map-pin" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
+        <span class="font-medium">Address:</span> {{ library.address || 'No address provided' }}
+      </p>
+
+      @if (library.description) {
+      <p
+        class="text-sm text-gray-600 italic line-clamp-2 text-center p-2"
+        [title]="library.description"
+      >
+        "{{ library.description }}"
+      </p>
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-2 mt-4 flex-shrink-0">
+      <button
+        (click)="onView(library)"
+        class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand2)] text-white rounded-md hover:bg-[var(--color-brand3)] transition-colors"
+      >
+        <lucide-icon name="eye" class="w-4 h-4"></lucide-icon>
+        View
+      </button>
+
+      @if (role == Role.Librarian && library.id == libraryId) {
+      <button
+        (click)="onEdit(library)"
+        class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+      >
+        <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+        Edit
+      </button>
+      }
+    </div>
+  </div>
+</div>

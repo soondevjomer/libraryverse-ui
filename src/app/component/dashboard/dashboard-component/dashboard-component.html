@@ -1,0 +1,158 @@
+<h2
+  class="text-2xl text-center md:text-left md:text-3xl font-bold text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-2 mb-6 tracking-wide uppercase"
+>
+  Dashboard
+</h2>
+
+<div class="p-4 md:p-6 space-y-6">
+  <!-- Greeting -->
+  <div
+    class="bg-gradient-to-r from-[var(--color-brand4)] to-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center"
+  >
+    <div>
+      <p class="text-sm md:text-base text-gray-600">Welcome back,</p>
+      <p class="text-xl md:text-2xl font-semibold text-[var(--color-brand1)]">
+        {{ claim?.name || 'Librarian' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- GRID STATS -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- LIBRARY STATS -->
+    <div
+      class="bg-white shadow-md rounded-2xl p-5 border border-gray-100 hover:shadow-lg transition-shadow"
+    >
+      <h3 class="text-base font-semibold text-[var(--color-brand1)] mb-3 flex items-center gap-2">
+        <lucide-icon
+          name="library-big"
+          class="w-5 h-5 text-[var(--color-brand2)] "
+        ></lucide-icon>
+        <span>Library Stat</span>
+      </h3>
+
+      @if (libraryStat$ | async; as libraryStat) {
+      <div class="space-y-2 text-sm text-gray-700">
+        <p>
+          Total Books:
+          <span class="font-semibold text-[var(--color-brand3)]">{{ libraryStat.totalBooks }}</span>
+        </p>
+        <p>
+          Low on Stock:
+          <span class="font-semibold text-red-600">{{ libraryStat.totalLowOnStock }}</span>
+        </p>
+      </div>
+      } @else {
+      <p class="text-xs text-gray-500">No stat found for library.</p>
+      }
+    </div>
+
+    <!-- CUSTOMER -->
+    <div
+      class="bg-white shadow-md rounded-2xl p-5 border border-gray-100 hover:shadow-lg transition-shadow"
+    >
+      <h3 class="text-base font-semibold text-[var(--color-brand1)] mb-3 flex items-center gap-2">
+        <lucide-icon
+          name="users"
+          class="w-5 h-5 text-[var(--color-brand2)] "
+        ></lucide-icon>
+        <span>Customer</span>
+      </h3>
+
+      @if (customerStat$ | async; as customerStat) {
+      <div class="space-y-2 text-sm text-gray-700">
+        <p>
+          Total Customers:
+          <span class="font-semibold text-[var(--color-brand3)]">{{
+            customerStat.totalCustomer
+          }}</span>
+        </p>
+        <p>
+          Top Customer:
+          <span class="font-semibold">{{ customerStat.customer?.name ?? 'N/A' }}</span>
+        </p>
+      </div>
+      } @else {
+      <p class="text-xs text-gray-500">No stat found for customer.</p>
+      }
+    </div>
+  </div>
+
+  <!-- SALES -->
+  <div
+    class="bg-white shadow-md rounded-2xl p-5 border border-gray-100 hover:shadow-lg transition-shadow"
+  >
+    <h3 class="text-base font-semibold text-[var(--color-brand1)] mb-3 flex items-center gap-2">
+      <lucide-icon
+        name="receipt"
+        class="w-5 h-5 text-[var(--color-brand2)] "
+      ></lucide-icon>
+      <span>Sales Overview</span>
+    </h3>
+
+    @if (saleStat$ | async; as saleStat) { @if (saleStat) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
+      <p>
+        Total Revenue:
+        <span class="font-semibold text-green-600">₱{{ saleStat.totalRevenue || 0 | number }}</span>
+      </p>
+      <p>
+        Total Purchases:
+        <span class="font-semibold text-[var(--color-brand3)]">{{
+          saleStat.totalPurchases || 0
+        }}</span>
+      </p>
+      <p>
+        Top Book:
+        <span class="font-semibold">{{ saleStat.topBook || 'N/A' }}</span>
+      </p>
+      <p>
+        Top Author:
+        <span class="font-semibold">{{ saleStat.topAuthor || 'N/A' }}</span>
+      </p>
+      <p>
+        Top Genre:
+        <span class="font-semibold">{{ saleStat.topGenre || 'N/A' }}</span>
+      </p>
+    </div>
+    } @else {
+    <p class="text-xs text-gray-500">No stat found for sales.</p>
+    } } @else {
+    <p class="text-xs text-gray-500">Loading...</p>
+    }
+  </div>
+
+  <!-- ORDERS -->
+  <div
+    class="bg-white shadow-md rounded-2xl p-5 border border-gray-100 hover:shadow-lg transition-shadow"
+  >
+    <h3 class="text-base font-semibold text-[var(--color-brand1)] mb-3 flex items-center gap-2">
+      <lucide-icon
+        name="clipboard-list"
+        class="w-5 h-5 text-[var(--color-brand2)] "
+      ></lucide-icon>
+      <span>Orders</span>
+    </h3>
+
+    @if (orderStat$ | async; as orderStat) { @if (orderStat) {
+    <div class="flex flex-col md:flex-row gap-4 text-sm">
+      <div class="flex-1 bg-green-50 p-3 rounded-lg text-center border border-green-100">
+        <p class="text-xs text-gray-500">Delivered</p>
+        <p class="text-lg font-semibold text-green-600">{{ orderStat.totalDelivered || 0 }}</p>
+      </div>
+      <div class="flex-1 bg-yellow-50 p-3 rounded-lg text-center border border-yellow-100">
+        <p class="text-xs text-gray-500">Pending</p>
+        <p class="text-lg font-semibold text-yellow-600">{{ orderStat.totalPending || 0 }}</p>
+      </div>
+      <div class="flex-1 bg-blue-50 p-3 rounded-lg text-center border border-blue-100">
+        <p class="text-xs text-gray-500">Shipped</p>
+        <p class="text-lg font-semibold text-blue-600">{{ orderStat.totalShipped || 0 }}</p>
+      </div>
+    </div>
+    } @else {
+    <p class="text-xs text-gray-500">No stat found for orders.</p>
+    } } @else {
+    <p class="text-xs text-gray-500">Loading...</p>
+    }
+  </div>
+</div>

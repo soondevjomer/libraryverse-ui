@@ -1,0 +1,17 @@
+<div #top></div>
+<h2
+  class="text-2xl text-center md:text-left md:text-3xl font-bold text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-2 mb-6 tracking-wide uppercase"
+>
+  Create Book
+</h2>
+<div>
+  @if (loading()) {
+  <p class="text-gray-600">Creating book ...</p>
+  } @else {
+  <app-book-form-component
+    [formMode]="createMode"
+    [book]="book"
+    (create)="handleCreate($event)"
+  ></app-book-form-component>
+  }
+</div>

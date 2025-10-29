@@ -1,0 +1,68 @@
+<div class="max-w-lg mx-auto p-6 bg-[var(--color-brand4)] rounded-2xl shadow-md space-y-6">
+  <h2 class="text-2xl font-bold text-[var(--color-brand1)] text-center">Payment</h2>
+
+  <!-- Total Summary -->
+  <div class="bg-[var(--color-brand1)] text-[var(--color-brand4)] p-4 rounded-xl flex justify-between items-center">
+    <span>Total Books:</span>
+    <span>{{ orderRequest.orderItems?.length }}</span>
+    <span>Total Amount:</span>
+    <span>₱{{ totalAmount | number:'1.2-2' }}</span>
+  </div>
+
+  <!-- Payment Method Selection -->
+  <div class="space-y-4">
+    <p class="text-[var(--color-brand1)] font-semibold">Selected Payment Method:</p>
+
+    @if (paymentMethod === PaymentMethod.BANK_TRANSFER) {
+      <div class="space-y-3">
+        <p class="text-[var(--color-brand2)] font-medium">Bank Transfer</p>
+        <input
+          [formControl]="accountNumberCtrl"
+          placeholder="Enter Account Number"
+          class="w-full border border-[var(--color-brand2)] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand3)]"
+        />
+        <button
+          type="button"
+        (click)="processPayment()"
+          class="w-full bg-[var(--color-brand2)] text-white font-semibold py-2 rounded-lg hover:bg-[var(--color-brand3)] transition-colors"
+        >
+          Pay via Bank
+        </button>
+      </div>
+    }
+    @else if (paymentMethod === PaymentMethod.DIGITAL_WALLET) {
+      <div class="space-y-3">
+        <p class="text-[var(--color-brand2)] font-medium">Digital Wallet</p>
+        <input
+          [formControl]="walletIdCtrl"
+          placeholder="Enter Wallet ID"
+          class="w-full border border-[var(--color-brand2)] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand3)]"
+        />
+        <button
+          type="button"
+          (click)="processPayment()"
+          class="w-full bg-[var(--color-brand2)] text-white font-semibold py-2 rounded-lg hover:bg-[var(--color-brand3)] transition-colors"
+        >
+          Pay via Wallet
+        </button>
+      </div>
+    }
+    @else {
+      <div class="space-y-3">
+        <p class="text-[var(--color-brand2)] font-medium">Cash on Delivery</p>
+        <button
+          type="button"
+          (click)="processPayment()"
+          class="w-full bg-[var(--color-brand2)] text-white font-semibold py-2 rounded-lg hover:bg-[var(--color-brand3)] transition-colors"
+        >
+          Confirm Order
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Notes / Info -->
+  <p class="text-sm text-[var(--color-brand5)] text-center">
+    For bank transfer or wallet payment, please provide the account or wallet ID above. This is a simulated payment flow.
+  </p>
+</div>

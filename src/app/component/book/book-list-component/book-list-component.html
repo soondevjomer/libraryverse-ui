@@ -1,0 +1,295 @@
+<h2
+  class="text-2xl text-center md:text-left md:text-3xl font-bold text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-2 mb-6 tracking-wide uppercase"
+>
+  Book List
+</h2>
+
+<!-- FILTERS & TOGGLES -->
+<form
+  [formGroup]="filterForm"
+  class="flex flex-col md:flex-row md:items-center md:justify-between bg-white p-4 rounded-2xl shadow-md border border-gray-200 mb-6 gap-4"
+>
+  <!-- LEFT SECTION -->
+  <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+    <input
+      type="text"
+      placeholder="Search books..."
+      formControlName="searchTitle"
+      (keydown)="onSearchKeyDown($event)"
+      class="border border-gray-300 rounded-md px-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand2)]"
+    />
+
+    <select
+      formControlName="sortBy"
+      (change)="onSortChange()"
+      class="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand2)]"
+    >
+      @for (sortKey of sortKeys; track $index) {
+      <option [value]="sortKey">{{ SortBy[sortKey] }}</option>
+      }
+    </select>
+
+    <button
+      type="button"
+      (click)="toggleSortDirection()"
+      class="bg-[var(--color-brand2)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-brand3)] transition"
+    >
+      {{ filterForm.get('sortDirection')?.value === 'ASC' ? '↓ Desc' : '↑ Asc' }}
+    </button>
+  </div>
+
+  <!-- RIGHT SECTION (Librarian Only) -->
+  @if (isLoggedIn() && role() === Role.Librarian) {
+  <div class="flex items-center gap-3">
+    <button
+      type="button"
+      (click)="toggleBookViewMode()"
+      class="border border-[var(--color-brand2)] text-[var(--color-brand2)] hover:bg-[var(--color-brand2)] hover:text-white px-4 py-2 rounded-md transition"
+    >
+      {{ bookViewMode() === 'allBooks' ? 'Switch to My Books' : 'Switch to All Books' }}
+    </button>
+
+    <button
+      type="button"
+      (click)="toggleViewMode()"
+      class="border border-[var(--color-brand2)] text-[var(--color-brand2)] hover:bg-[var(--color-brand2)] hover:text-white px-4 py-2 rounded-md transition"
+    >
+      {{ viewMode() === 'card' ? 'Switch to Table View' : 'Switch to Card View' }}
+    </button>
+  </div>
+  }
+</form>
+
+<!-- MAIN BOOK LIST DISPLAY -->
+@if (bookPage$ | async; as bookPage) { @if (bookPage.content.length > 0) {
+<!-- TABLE VIEW -->
+@if (viewMode() === 'table') {
+
+<!-- MOBILE TABLE VIEW (Card-like Rows) -->
+<div class="md:hidden space-y-3">
+  @for (book of bookPage.content; track book.id) {
+  <div
+    class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+  >
+    <div class="p-4 flex flex-col gap-2">
+      <!-- TITLE + PRICE -->
+      <div class="flex justify-between items-start">
+        <h3 class="text-lg font-semibold text-[var(--color-brand1)] leading-snug">
+          {{ book.bookDetail.title || 'Untitled' }}
+        </h3>
+        <span class="text-sm font-medium text-[var(--color-brand2)]">
+          ₱{{ book.bookDetail.price }}
+        </span>
+      </div>
+
+      <!-- AUTHORS -->
+      <p class="text-sm text-gray-700 leading-tight">
+        <span class="font-medium">Authors:</span>
+        {{ formatAuthors(book) }}
+      </p>
+
+      <!-- STOCK INFO -->
+      <div class="text-xs text-gray-700 leading-snug mt-1">
+        @if (book.inventory) { @if (role() === Role.Librarian) {
+        <div class="grid grid-cols-[auto_1fr] items-start gap-x-2">
+          <lucide-icon name="package" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+          <span [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''">
+            Available: {{ book.inventory.availableStock }}
+          </span>
+          <span></span>
+          <span>Reserved: {{ book.inventory.reservedStock }}</span>
+          <span></span>
+          <span>Shipped: {{ book.inventory.shipped }}</span>
+          <span></span>
+          <span>Delivered: {{ book.inventory.delivered }}</span>
+        </div>
+        } @else {
+        <div class="flex items-center">
+          <lucide-icon
+            name="package"
+            class="inline w-4 h-4 text-[var(--color-brand2)] mr-1"
+          ></lucide-icon>
+          <span [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''">
+            Available: {{ book.inventory.availableStock }}
+          </span>
+        </div>
+        } } @else {
+        <span class="italic text-gray-400">No stock</span>
+        }
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="flex justify-end gap-2 mt-3">
+        <button
+          (click)="handleOnView(book)"
+          class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand2)] text-white text-sm rounded-md hover:bg-[var(--color-brand3)] transition-colors"
+        >
+          <lucide-icon name="eye" class="w-4 h-4"></lucide-icon>
+          View
+        </button>
+
+        @if (role() === Role.Librarian) { @if (book.libraryId === libraryId) {
+        <button
+          (click)="handleOnEdit(book)"
+          class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+        >
+          <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+          Edit
+        </button>
+        } @else {
+        <button
+          (click)="handleOnCopy(book)"
+          class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+        >
+          <lucide-icon name="book-copy" class="w-4 h-4"></lucide-icon>
+          Copy
+        </button>
+        } }
+      </div>
+    </div>
+  </div>
+  }
+</div>
+
+<!-- DESKTOP TABLE -->
+<div class="hidden md:block overflow-x-auto bg-white rounded-2xl shadow-md border border-gray-200">
+  <table class="min-w-full text-sm text-left text-gray-700">
+    <thead class="bg-[var(--color-brand1)] text-white uppercase text-xs">
+      <tr>
+        <th class="px-6 py-3 font-semibold w-12 text-center">#</th>
+        <th class="px-6 py-3 font-semibold">Title</th>
+        <th class="px-6 py-3 font-semibold">Author</th>
+        <th class="px-6 py-3 font-semibold">Stock</th>
+        <th class="px-6 py-3 font-semibold">Price</th>
+        <th class="px-6 py-3 font-semibold text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (book of bookPage.content; track $index) {
+      <tr class="border-b hover:bg-gray-50 transition-all duration-200">
+        <td class="px-6 py-3 text-center font-semibold text-gray-700">
+          {{ bookPage.pageNumber * bookPage.pageSize + $index + 1 }}
+        </td>
+
+        <td class="px-6 py-3 font-semibold text-[var(--color-brand1)] truncate">
+          {{ book.bookDetail.title || 'Untitled' }}
+        </td>
+
+        <td class="px-6 py-3">
+          {{ formatAuthors(book) }}
+        </td>
+
+        <td class="px-6 py-3 align-top">
+          @if (book.inventory) { @if (role() == Role.Librarian) {
+          <div class="text-xs text-gray-700 leading-snug">
+            <div class="grid grid-cols-[auto_1fr] items-start gap-x-2">
+              @if (viewMode.toString() == 'card') {
+              <lucide-icon name="package" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+              } @else {
+              <span></span>
+              }
+              <span [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''"
+                ><span class="font-medium">Available:</span>
+                {{ book.inventory.availableStock }}</span
+              >
+              <span></span>
+              <span>Reserved: {{ book.inventory.reservedStock }}</span>
+              <span></span>
+              <span>Shipped: {{ book.inventory.shipped }}</span>
+              <span></span>
+              <span>Delivered: {{ book.inventory.delivered }}</span>
+            </div>
+          </div>
+          } @else {
+          <div class="text-sm text-gray-700 flex items-center">
+            <lucide-icon
+              name="package"
+              class="inline w-4 h-4 text-[var(--color-brand2)] mr-1"
+            ></lucide-icon>
+            <span [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''">{{
+              book.inventory.availableStock
+            }}</span>
+          </div>
+          } } @else {
+          <span class="italic text-gray-400 text-xs">No stock</span>
+          }
+        </td>
+
+        <td class="px-6 py-3">
+          {{
+            book.bookDetail.price !== undefined && book.bookDetail.price !== null
+              ? (book.bookDetail.price | currency : 'PHP' : 'symbol' : '1.2-2')
+              : 'N/A'
+          }}
+        </td>
+
+        <td class="px-6 py-3">
+          <div class="flex flex-col items-center justify-end gap-2">
+            <button
+              (click)="handleOnView(book)"
+              class="flex items-center justify-center gap-1 w-24 px-3 py-1.5 bg-[var(--color-brand2)] text-white text-sm rounded-md hover:bg-[var(--color-brand3)] transition-colors"
+            >
+              <lucide-icon name="eye" class="w-4 h-4"></lucide-icon>
+              View
+            </button>
+
+            @if (role() == Role.Librarian) { @if (book.libraryId == libraryId) {
+            <button
+              (click)="handleOnEdit(book)"
+              class="flex items-center justify-center gap-1 w-24 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+            >
+              <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+              Edit
+            </button>
+            } @else {
+            <button
+              (click)="handleOnCopy(book)"
+              class="flex items-center justify-center gap-1 w-24 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+            >
+              <lucide-icon name="book-copy" class="w-4 h-4"></lucide-icon>
+              Copy
+            </button>
+            } }
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+}
+
+<!-- CARD VIEW -->
+@else {
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  @for (book of bookPage.content; track book.id) {
+  <app-book-card-component
+    [book]="book"
+    [role]="role()"
+    [libraryId]="libraryId"
+    (view)="handleOnView($event)"
+    (addToCart)="handleOnAddToCart($event)"
+    (buy)="handleOnBuy($event)"
+    (copy)="handleOnCopy($event)"
+    (edit)="handleOnEdit($event)"
+  ></app-book-card-component>
+  }
+</div>
+}
+
+<div class="mt-6">
+  <app-pagination-component
+    [pageNumber]="bookPage.pageNumber"
+    [pageTotal]="bookPage.totalPage"
+    (pageChange)="handlePageChange($event)"
+  ></app-pagination-component>
+</div>
+} @else {
+<p class="text-gray-500 italic text-center py-8">No books found.</p>
+} } @else {
+<div class="animate-pulse space-y-3">
+  <div class="h-6 bg-gray-300 rounded w-1/4"></div>
+  <div class="bg-gray-200 h-40 rounded-2xl"></div>
+  <p class="text-gray-500 italic">Loading books...</p>
+</div>
+}

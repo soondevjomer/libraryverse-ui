@@ -1,0 +1,63 @@
+<h2
+  class="text-2xl text-center md:text-left md:text-3xl font-bold text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-2 mb-6 tracking-wide uppercase"
+>
+  Customer List
+</h2>
+
+@if (customers$ | async; as customerPage) { @if (customerPage.content.length !== 0) {
+<div class="overflow-x-auto bg-white rounded-2xl shadow-md border border-gray-200">
+  <table class="min-w-full text-sm text-left text-gray-700">
+    <thead class="bg-[var(--color-brand1)] text-white uppercase text-xs">
+      <tr>
+        <th class="px-6 py-3 font-semibold w-12 text-center">#</th>
+        <th class="px-6 py-3 font-semibold">Name</th>
+        <th class="px-6 py-3 font-semibold">Address</th>
+        <th class="px-6 py-3 font-semibold">Contact</th>
+        <th class="px-6 py-3 font-semibold text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (customer of customerPage.content; track $index) {
+      <tr class="border-b hover:bg-gray-50 transition-all duration-200">
+        <td class="px-6 py-3 text-center font-semibold text-gray-700">
+          {{ customerPage.pageNumber * customerPage.pageSize + $index + 1 }}
+        </td>
+        <td class="px-6 py-3 font-semibold text-[var(--color-brand1)] truncate">
+          {{ customer.name }}
+        </td>
+        <td class="px-6 py-3">
+          {{ customer.address || 'N/A' }}
+        </td>
+        <td class="px-6 py-3">
+          {{ customer.contactNumber || 'N/A' }}
+        </td>
+        <td class="px-6 py-3 text-right">
+          <button
+            (click)="onView(customer)"
+            class="flex items-center justify-center gap-1 w-24 px-3 py-1.5 bg-[var(--color-brand2)] text-white text-sm rounded-md hover:bg-[var(--color-brand3)] transition-colors">
+            <lucide-icon name="eye" class="w-4 h-4"></lucide-icon>
+            View
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-6">
+  <app-pagination-component
+    [pageNumber]="customerPage.pageNumber"
+    [pageTotal]="customerPage.totalPage"
+    (pageChange)="handlePageChange($event)"
+  ></app-pagination-component>
+</div>
+} @else {
+<p class="text-gray-500 italic text-center py-8">No customers found.</p>
+} } @else {
+<div class="animate-pulse space-y-3">
+  <div class="h-6 bg-gray-300 rounded w-1/4"></div>
+  <div class="bg-gray-200 h-40 rounded-2xl"></div>
+  <p class="text-gray-500 italic">Loading customers...</p>
+</div>
+}

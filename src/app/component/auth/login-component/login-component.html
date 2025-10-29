@@ -1,0 +1,66 @@
+<section class="flex flex-col items-center justify-center min-h-[80vh] px-4 bg-brand4/20">
+  <div class="w-full max-w-md p-8 bg-brand4 rounded-2xl shadow-lg border border-gray-200 space-y-6">
+    <h2
+      class="text-3xl font-bold text-center text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-3 tracking-wide uppercase"
+    >
+      Login
+    </h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="handleLogin()" class="space-y-5">
+      <div>
+        <label class="block text-brand1 font-medium mb-1">Username</label>
+        <input
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          placeholder="Enter your username"
+          class="w-full px-4 py-3 border-2 border-brand2 rounded-lg text-brand1 placeholder:text-brand1/80 focus:outline-none focus:border-brand3 focus:ring-2 focus:ring-brand3 transition"
+        />
+      </div>
+
+      <div>
+        <label class="block text-brand1 font-medium mb-1">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="Enter your password"
+          class="w-full px-4 py-3 border-2 border-brand2 rounded-lg text-brand1 placeholder:text-brand1/80 focus:outline-none focus:border-brand3 focus:ring-2 focus:ring-brand3 transition"
+        />
+      </div>
+
+      <div>
+        @if (!isLoading()) {
+        <button
+          type="submit"
+          class="w-full py-3 bg-brand2 text-white font-semibold rounded-lg hover:bg-brand3 transition"
+        >
+          Login
+        </button>
+        } @else {
+        <div
+          class="w-full py-3 bg-[var(--color-brand2)] text-white font-semibold rounded-lg flex justify-center items-center gap-2 animate-pulse"
+        >
+          <lucide-icon name="loader" class="w-5 h-5 text-[var(--color-brand4)] animate-spin">
+          </lucide-icon>
+          <span>Logging in...</span>
+        </div>
+        }
+      </div>
+
+      @if (errorMessage) {
+      <p class="text-red-500 font-medium text-center">{{ errorMessage }}</p>
+      }
+
+      <p class="text-center text-sm text-brand5">
+        Don’t have an account?
+        <a
+          (click)="goRegister()"
+          routerLink="/register"
+          class="text-brand2 font-semibold hover:underline"
+          >Register here</a
+        >
+      </p>
+    </form>
+  </div>
+</section>

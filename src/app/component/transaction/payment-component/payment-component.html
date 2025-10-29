@@ -1,0 +1,110 @@
+<section
+  class="flex flex-col items-center justify-center min-h-[85vh] px-4 bg-brand4/20"
+>
+  <div
+    class="w-full max-w-md p-8 bg-brand4 rounded-2xl shadow-lg border border-gray-200 space-y-6"
+  >
+    
+<div
+  class="p-6 bg-brand4 rounded-2xl shadow-md max-w-md mx-auto space-y-5 border border-gray-100"
+  [formGroup]="paymentForm"
+>
+  <h2
+      class="text-3xl font-bold text-center text-[var(--color-brand1)] 
+             border-b-4 border-[var(--color-brand2)] pb-3 tracking-wide uppercase"
+    >
+      Payment
+    </h2>
+  <!-- Selected Items -->
+  @if (selected.length > 0) {
+    <div class="space-y-2">
+      @for (item of selected; track item.bookId) {
+        <div class="flex justify-between items-center p-2 bg-white rounded-md shadow-sm">
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-brand1 truncate" [title]="item.bookName">
+              {{ item.bookName }}
+            </p>
+            <p class="text-sm text-brand5">
+              Price: ₱{{ item.price }} × {{ item.quantity }}
+            </p>
+          </div>
+          <span class="font-semibold text-brand1 w-20 text-right">
+            ₱{{ item.price * item.quantity }}
+          </span>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="text-center text-brand1 italic">
+      No items selected for checkout.
+    </p>
+  }
+
+  <!-- Shipping Info -->
+  <div class="space-y-1">
+    <label for="address" class="block font-medium text-brand1">Address <span class="text-red-500">*</span></label>
+    <input
+      id="address"
+      type="text"
+      formControlName="address"
+      placeholder="Enter your delivery address"
+      class="w-full p-2 border border-brand2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand3 placeholder:text-brand1/80"
+      [class.border-red-500]="submitted() && paymentForm.get('address')?.invalid"
+    />
+    @if (submitted() && paymentForm.get('address')?.hasError('required')) {
+      <p class="text-red-500 text-sm mt-1">Address is required.</p>
+    }    
+  </div>
+
+  <div class="space-y-1">
+    <label for="contactNumber" class="block font-medium text-brand1">Contact Number <span class="text-red-500">*</span></label>
+    <input
+      id="contactNumber"
+      type="text"
+      formControlName="contactNumber"
+      placeholder="09XXXXXXXXX"
+      class="w-full p-2 border border-brand2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand3 placeholder:text-brand1/80"
+      [class.border-red-500]="submitted() && paymentForm.get('contactNumber')?.invalid"
+    />
+    @if (submitted() && paymentForm.get('contactNumber')?.hasError('required')) {
+      <p class="text-red-500 text-sm mt-1">Contact Number is required.</p>
+    }  
+  </div>
+
+  <!-- Payment Method -->
+  <div class="space-y-1">
+    <label for="paymentMethod" class="block font-medium text-brand1">Payment Method</label>
+    <select
+      id="paymentMethod"
+      formControlName="paymentMethod"
+      class="w-full p-2 border border-brand2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand3"
+    >
+      @for (paymentKey of paymentMethodKeys; track $index) {
+        <option [value]="paymentKey">{{ PaymentMethod[paymentKey] }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Summary -->
+  <div class="border-t border-gray-300 pt-3 space-y-1">
+    <div class="flex justify-between text-brand1 font-medium">
+      <span>Total Books:</span>
+      <span>{{ totalBooks }}</span>
+    </div>
+    <div class="flex justify-between text-brand1 font-semibold text-lg">
+      <span>Total Amount:</span>
+      <span>₱{{ totalAmount }}</span>
+    </div>
+  </div>
+
+  <!-- Checkout Button -->
+  <button
+    (click)="handleBuy()"
+    type="button"
+    class="w-full py-3 bg-brand2 text-white rounded-md font-semibold hover:bg-brand3 transition disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    Buy
+  </button>
+</div>
+</div>
+</section>

@@ -1,0 +1,72 @@
+@if (loading()) {
+  <div class="flex justify-center items-center py-10 text-[var(--color-brand2)]">
+    <lucide-icon name="loader" class="w-6 h-6 animate-spin"></lucide-icon>
+    <span class="ml-2">Loading profile...</span>
+  </div>
+} @else if (error()) {
+  <div class="text-center text-red-500 py-6">
+    {{ error() }}
+  </div>
+} @else if (profile()) {
+  <div
+    class="max-w-3xl mx-auto p-6 bg-[var(--color-brand4)] rounded-2xl shadow-md border border-gray-200 space-y-6"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b-4 border-[var(--color-brand2)] pb-3">
+      <h2 class="text-2xl md:text-3xl font-bold text-[var(--color-brand1)] uppercase tracking-wide">
+        Profile
+      </h2>
+      <button
+        (click)="goEditProfile()"
+        class="flex items-center gap-1 bg-[var(--color-brand2)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-brand3)] transition-colors"
+      >
+        <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+        Edit
+      </button>
+    </div>
+
+    <!-- Profile Info -->
+    <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+      <!-- Profile Picture -->
+      <div class="relative flex-shrink-0">
+        @if (profile()?.image) {
+        <img
+          [src]="baseUrl + profile()?.image"
+          alt="{{ profile()?.name || 'Profile Image' }}"
+          class="w-40 h-40 rounded-full object-cover border-4 border-[var(--color-brand2)] shadow-md bg-[var(--color-brand6)]"
+        />
+        } @else {
+        <div
+          class="w-40 h-40 rounded-full border-4 border-[var(--color-brand2)] shadow-md flex items-center justify-center bg-[var(--color-brand2)] text-white text-5xl font-bold"
+        >
+          {{ getInitial(profile()?.name) }}
+        </div>
+        }
+      </div>
+
+      <!-- Profile Details -->
+      <div class="flex-1 space-y-4 text-gray-700">
+        <div>
+          <h3 class="text-xl font-semibold text-[var(--color-brand1)]">
+            {{ profile()?.name || 'No Name' }}
+          </h3>
+          <p class="text-sm text-gray-600">@{{ profile()?.username }}</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <p class="flex items-center gap-2">
+            <lucide-icon name="mail" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+            <span>{{ profile()?.email || 'N/A' }}</span>
+          </p>
+          <p class="flex items-center gap-2">
+            <lucide-icon name="phone" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+            <span>{{ profile()?.contactNumber || 'N/A' }}</span>
+          </p>
+          <p class="flex items-center gap-2 sm:col-span-2">
+            <lucide-icon name="map-pin" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+            <span>{{ profile()?.address || 'N/A' }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+}

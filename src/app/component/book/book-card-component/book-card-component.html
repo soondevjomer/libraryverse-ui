@@ -1,0 +1,183 @@
+@if (book) {
+<div
+  class="flex flex-col h-full bg-[var(--color-brand4)] border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+>
+  <!-- Book Cover -->
+  <div class="relative flex-shrink-0 bg-[var(--color-brand6)] flex items-center justify-center">
+    <img
+      [src]="book.bookDetail.bookCover ? baseUrl + book.bookDetail.bookCover : defaultBookCover"
+      [alt]="book.bookDetail.title || 'Default book cover'"
+      class="w-full h-64 sm:h-72 object-contain p-3"
+    />
+
+    <!-- Floating Price Badge -->
+    <div
+      class="absolute bottom-2 right-2 bg-[var(--color-brand2)] text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-md"
+    >
+      ₱{{ book.bookDetail.price || 0 | number : '1.2-2' }}
+    </div>
+  </div>
+
+  <!-- Book Info -->
+  <div class="flex flex-col justify-between flex-1 p-4 sm:p-5 space-y-3">
+    <div class="space-y-2">
+      <!-- Title & Popularity Score -->
+      <div class="flex">
+        <h3
+          class="flex-1 text-lg sm:text-xl font-semibold text-[var(--color-brand1)] leading-tight truncate"
+          [title]="book.bookDetail.title || 'Untitled'"
+        >
+          {{ truncateText(book.bookDetail.title || 'Untitled', 40) }}
+        </h3>
+
+        <!-- Popularity Score -->
+        @if (book.roundedRating >= 1) {
+        <div class="flex items-center gap-1 text-[var(--color-brand2)] text-sm">
+          <lucide-icon name="star" class="w-4 h-4 text-amber-300 fill-amber-300"></lucide-icon>
+          <span class="font-medium text-amber-500">
+            {{ book.roundedRating }}
+          </span>
+        </div>
+        }
+      </div>
+
+      <!-- Author -->
+      <p
+        class="text-sm text-gray-700 truncate flex items-center gap-1"
+        [title]="book.bookDetail.authors?.join(', ') || 'Unknown'"
+      >
+        <lucide-icon name="user" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+        <span class="font-medium">Author:</span>
+        <span>{{ truncateText(book.bookDetail.authors?.join(', ') || 'Unknown', 40) }}</span>
+      </p>
+
+      <!-- Genre -->
+      <p
+        class="text-sm text-gray-700 truncate flex items-center gap-1"
+        [title]="book.bookDetail.genres?.join(', ') || 'N/A'"
+      >
+        <lucide-icon name="tags" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+        <span class="font-medium">Genre:</span>
+        <span>{{ truncateText(book.bookDetail.genres?.join(', ') || 'N/A', 40) }}</span>
+      </p>
+
+      <!-- Stock Info -->
+      <div class="flex items-start justify-between text-sm text-gray-600">
+        @if (book.inventory) { @if (role == Role.Librarian) {
+        <div class="flex flex-col space-y-0.5">
+          <!-- Available always shown with icon -->
+          <div class="flex items-center">
+            <lucide-icon
+              name="package"
+              class="w-4 h-4 text-[var(--color-brand2)] mr-1 flex-shrink-0"
+            ></lucide-icon>
+            <span
+              class="font-medium"
+              [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''"
+            >
+              Available: {{ book.inventory.availableStock }}
+            </span>
+          </div>
+
+          @if (libraryId == book.libraryId) {
+          <!-- Indented details -->
+          <div class="pl-5 space-y-0.5 text-gray-700">
+            <div>
+              Reserved: <span class="font-medium">{{ book.inventory.reservedStock }}</span>
+            </div>
+            <div>
+              Shipped: <span class="font-medium">{{ book.inventory.shipped }}</span>
+            </div>
+            <div>
+              Delivered: <span class="font-medium">{{ book.inventory.delivered }}</span>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="flex items-center">
+          <lucide-icon
+            name="package"
+            class="w-4 h-4 text-[var(--color-brand2)] mr-1 flex-shrink-0"
+          ></lucide-icon>
+          <span>
+            Available:
+            <span
+              class="font-medium"
+              [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''"
+              >{{ book.inventory.availableStock }}</span
+            >
+          </span>
+        </div>
+        } } @else {
+        <span class="italic text-gray-500">Stock unavailable</span>
+        }
+      </div>
+
+      <!-- Genre -->
+      <p
+        class="text-sm text-gray-700 truncate flex items-center gap-1"
+        [title]="book.bookDetail.description"
+      >
+        <lucide-icon name="book-text" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+        <span class="font-medium">Description:</span>
+        <span>{{ truncateText(book.bookDetail.description || 'N/A', 40) }}</span>
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap justify-end gap-2 mt-4 border-t border-gray-200 pt-3">
+      <!-- View -->
+      <button
+        (click)="view.emit(book)"
+        class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand2)] text-white text-sm rounded-md hover:bg-[var(--color-brand3)] transition-colors"
+      >
+        <lucide-icon name="eye" class="w-4 h-4"></lucide-icon>
+        View
+      </button>
+
+      @if (role == Role.Reader || role == Role.Guest) {
+      <!-- Add to Cart -->
+      <button
+        [disabled]="isAnimating"
+        (click)="onAddToCart(book)"
+        class="relative flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (!isAnimating) {
+        <lucide-icon name="shopping-cart" class="w-4 h-4"></lucide-icon>
+        Add to Cart } @else {
+        <span class="absolute left-2 top-1/2 -translate-y-1/2 animate-cart-move">🛒</span>
+        }
+      </button>
+
+      <!-- Buy -->
+      <button
+        (click)="buy.emit(book)"
+        class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+      >
+        <lucide-icon name="credit-card" class="w-4 h-4"></lucide-icon>
+        Buy
+      </button>
+      } @if (role == Role.Librarian) { @if (book.libraryId == libraryId) {
+      <!-- Edit -->
+      <button
+        (click)="edit.emit(book)"
+        class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+      >
+        <lucide-icon name="pencil" class="w-4 h-4"></lucide-icon>
+        Edit
+      </button>
+      } @else {
+      <!-- Copy -->
+      <button
+        (click)="copy.emit(book)"
+        class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
+      >
+        <lucide-icon name="book-copy" class="w-4 h-4"></lucide-icon>
+        Copy
+      </button>
+      } }
+    </div>
+  </div>
+</div>
+}

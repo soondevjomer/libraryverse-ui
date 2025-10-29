@@ -1,0 +1,38 @@
+<div
+  class="flex flex-wrap items-center justify-center gap-2 mt-6 bg-[var(--color-brand4)] p-3 rounded-2xl shadow-sm"
+>
+  <!-- Back -->
+  <button
+    (click)="onBack()"
+    [disabled]="pageNumber === 0"
+    class="flex items-center gap-1 px-3 py-1 rounded-lg font-medium transition-all duration-200 bg-[var(--color-brand1)] text-[var(--color-brand4)] hover:bg-[var(--color-brand2)] disabled:opacity-40 disabled:cursor-not-allowed min-w-[40px] h-10 text-sm justify-center"
+  >
+    <span class="md:hidden">&lt;</span>
+    <span class="hidden md:inline">Back</span>
+  </button>
+
+  <!-- Info -->
+  <div class="flex items-center gap-1 text-[var(--color-brand1)] font-medium text-sm">
+    <span>Page</span>
+    <input
+      type="number"
+      [value]="displayPage"
+      (change)="goToPage($event)"
+      (blur)="onInputBlur($event)"
+      min="1"
+      [max]="pageTotal"
+      class="w-12 sm:w-14 text-center border border-[var(--color-brand2)] rounded-lg px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand3)] text-sm"
+    />
+    <span>of {{ pageTotal }}</span>
+  </div>
+
+  <!-- Next -->
+  <button
+    (click)="onNext()"
+    [disabled]="pageNumber >= pageTotal - 1"
+    class="flex items-center gap-1 px-3 py-1 rounded-lg font-medium transition-all duration-200 bg-[var(--color-brand1)] text-[var(--color-brand4)] hover:bg-[var(--color-brand2)] disabled:opacity-40 disabled:cursor-not-allowed min-w-[40px] h-10 text-sm justify-center"
+  >
+    <span class="md:hidden">&gt;</span>
+    <span class="hidden md:inline">Next</span>
+  </button>
+</div>

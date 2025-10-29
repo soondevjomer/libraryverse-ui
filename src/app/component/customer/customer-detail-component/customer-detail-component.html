@@ -1,0 +1,65 @@
+<h2
+  class="text-2xl text-center md:text-left md:text-3xl font-bold text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-2 mb-6 tracking-wide uppercase"
+>
+  Customer Detail
+</h2>
+
+@if (customer) {
+  @if (customer) {
+    <div
+      class="bg-white shadow-md rounded-2xl p-6 flex flex-col md:flex-row items-center md:items-start gap-6 border border-gray-100"
+    >
+      <!-- Profile Image -->
+      <div class="relative flex-shrink-0">
+      @if (customer.image) {
+        <img
+          [src]="baseUrl + customer.image"
+          alt="{{ customer.name }}"
+          class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-[var(--color-brand2)] shadow-md bg-[var(--color-brand6)]"
+        />
+      } @else {
+        <div
+          class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[var(--color-brand2)] shadow-md flex items-center justify-center bg-[var(--color-brand2)] text-white text-4xl font-bold"
+        >
+          {{ getInitial(customer.name) }}
+        </div>
+      }
+    </div>
+
+
+      <!-- Customer Information -->
+      <div class="flex-1 space-y-3 text-center md:text-left">
+        <h3 class="text-2xl font-semibold text-[var(--color-brand1)]">
+          {{ customer.name }}
+        </h3>
+
+        <div class="flex flex-col gap-1 text-gray-700">
+          <p class="flex items-center justify-center md:justify-start gap-2">
+            <i class="bi bi-envelope text-[var(--color-brand2)]"></i>
+            <span>{{ customer.email || 'No email provided' }}</span>
+          </p>
+
+          <p class="flex items-center justify-center md:justify-start gap-2">
+            <i class="bi bi-telephone text-[var(--color-brand2)]"></i>
+            <span>{{ customer.contactNumber || 'No contact provided' }}</span>
+          </p>
+
+          <p class="flex items-center justify-center md:justify-start gap-2">
+            <i class="bi bi-geo-alt text-[var(--color-brand2)]"></i>
+            <span>{{ customer.address || 'No address provided' }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <p class="text-gray-500 italic text-center py-8">
+      No customer detail found.
+    </p>
+  }
+} @else {
+  <div class="animate-pulse space-y-3">
+    <div class="h-6 bg-gray-300 rounded w-1/4"></div>
+    <div class="bg-gray-200 h-40 rounded-2xl"></div>
+    <p class="text-gray-500 italic">Loading customer detail...</p>
+  </div>
+}

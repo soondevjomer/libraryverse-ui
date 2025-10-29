@@ -1,0 +1,137 @@
+<!-- Topbar -->
+<div class="flex items-center justify-between bg-brand1 text-white px-4 py-3">
+  <!-- Left group: Burger + Logo -->
+  <div class="flex items-center space-x-3">
+    <!-- Burger icon (only mobile) -->
+    <button (click)="toggleMobileMenu()" class="md:hidden focus:outline-none">
+      <lucide-icon name="menu" class="w-5 h-5"></lucide-icon>
+    </button>
+
+    <!-- Logo / App name -->
+    <div class="flex items-center space-x-2 font-bold text-white">
+      <div
+        (click)="gotoDashboardOrBooks()"
+        class="bg-white/10 p-1 rounded-lg backdrop-blur-sm cursor-pointer"
+      >
+        <img src="library-verse2-logo.png" alt="libraryverse-logo" class="w-8 h-8 drop-shadow-md" />
+      </div>
+      <span (click)="gotoDashboardOrBooks()" class="text-xl tracking-wide cursor-pointer"
+        >LIBRARY VERSE</span
+      >
+    </div>
+  </div>
+
+  <!-- Right side -->
+  <div class="flex items-center space-x-4">
+    @if (isLoggedIn()) {
+    <div class="flex items-center space-x-4">
+      @if (isLoggedIn()) {
+      <div class="relative">
+        <!-- Profile Button -->
+        <button
+          (click)="toggleDropDown()"
+          class="w-10 h-10 rounded-full bg-[var(--color-brand2)] hover:bg-[var(--color-brand3)] flex items-center justify-center text-[var(--color-brand4)] font-semibold shadow-md transition duration-200 overflow-hidden"
+        >
+          @if (image()) {
+          <img
+            [src]="baseUrl + image()"
+            alt="Profile Image"
+            class="w-full h-full object-cover rounded-full"
+          />
+          } @else {
+          <span>{{ userInitial() }}</span>
+          }
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div
+          [ngClass]="isDropDownOpen ? 'block' : 'hidden'"
+          class="absolute right-0 mt-2 w-48 bg-[var(--color-brand4)] border border-[var(--color-brand2)] rounded-xl shadow-lg overflow-hidden z-50"
+        >
+          <!-- Header -->
+          <!-- <div
+            class="px-4 py-2 text-sm font-semibold text-[var(--color-brand4)] bg-[var(--color-brand2)] bg-opacity-20 border-b border-[var(--color-brand3)]"
+          >
+            {{ name }}
+          </div> -->
+
+          <!-- Menu Items -->
+          <button
+            (click)="gotoProfile()"
+            class="w-full text-left block px-4 py-2 text-sm text-[var(--color-brand1)] hover:bg-[var(--color-brand2)] hover:text-[var(--color-brand4)] transition duration-150"
+          >
+            Profile
+          </button>
+
+          <button
+            (click)="handleLogout()"
+            class="w-full text-left block px-4 py-2 text-sm text-[var(--color-brand1)] hover:bg-[var(--color-brand2)] hover:text-[var(--color-brand4)] transition duration-150"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+      } @else {
+      <button
+        (click)="gotoLogin()"
+        class="bg-[var(--color-brand2)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-brand3)] hover:text-[var(--color-brand4)] transition"
+      >
+        Login
+      </button>
+      }
+    </div>
+    } @else {
+    <button
+      (click)="gotoLogin()"
+      class="bg-[var(--color-brand2)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-brand3)] hover:text-[var(--color-brand4)] transition"
+    >
+      Login
+    </button>
+    }
+  </div>
+</div>
+
+<!-- Mobile navigation (below topbar) -->
+@if (isMobileMenuOpen) {
+<nav class="md:hidden bg-brand1 text-white flex flex-col p-3 space-y-2 animate-fade-in-down">
+  @for (nav of filteredNavItems(); track nav.path) {
+  <a
+    routerLink="{{ nav.path }}"
+    routerLinkActive="bg-[var(--color-brand3)] text-[var(--color-brand5)]"
+    class="group flex items-center gap-2 px-4 py-2 rounded hover:bg-[var(--color-brand2)] transition duration-200"
+  >
+    <lucide-icon
+      [name]="nav.icon"
+      class="w-5 h-5 text-[var(--color-brand2)] group-hover:text-[var(--color-brand1)] group-[.router-link-active]:text-[var(--color-brand5)]"
+    ></lucide-icon>
+    <span>{{ nav.name }}</span>
+  </a>
+  }
+</nav>
+
+}
+<!-- Main layout -->
+<div class="flex min-h-screen bg-[var(--color-brand4)]">
+  <!-- Sidebar (desktop only) -->
+  <nav class="hidden md:flex bg-brand1 text-white w-64 p-4 flex-col space-y-1">
+    @for (nav of filteredNavItems(); track nav.path) {
+    <a
+      routerLink="{{ nav.path }}"
+      routerLinkActive="bg-[var(--color-brand3)] text-[var(--color-brand5)]"
+      class="group flex items-center gap-3 px-4 py-2 rounded hover:bg-[var(--color-brand2)] transition duration-200"
+    >
+      <lucide-icon
+        [name]="nav.icon"
+        class="w-5 h-5 text-[var(--color-brand2)] group-hover:text-[var(--color-brand1)] group-[.router-link-active]:text-[var(--color-brand5)]"
+      ></lucide-icon>
+      <span>{{ nav.name }}</span>
+    </a>
+    }
+  </nav>
+  <app-toast-component></app-toast-component>
+
+  <!-- Main content -->
+  <main class="flex-1 p-6 overflow-y-auto">
+    <router-outlet></router-outlet>
+  </main>
+</div>

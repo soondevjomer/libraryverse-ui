@@ -1,0 +1,88 @@
+<h2
+  class="text-2xl text-center md:text-left md:text-3xl font-bold text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-2 mb-6 tracking-wide uppercase"
+>
+  Sales
+</h2>
+
+<section class="min-h-screen bg-[var(--color-brand4)] p-2">
+  @if (salesPage$ | async; as salesPage) { @if (salesPage?.content?.length &&
+  salesPage.content.length > 0) {
+  <div class="overflow-x-auto bg-white rounded-2xl shadow-md border border-[var(--color-brand3)]">
+    <table class="w-full text-sm text-left border-collapse">
+      <thead class="bg-[var(--color-brand1)] text-white">
+        <tr>
+          <th class="px-6 py-3 rounded-tl-2xl text-center">#</th>
+          <th class="px-6 py-3">Date</th>
+          <th class="px-6 py-3">Customer</th>
+          <th class="px-6 py-3">Book Title</th>
+          <th class="px-6 py-3 text-center">Qty</th>
+          <th class="px-6 py-3 text-right">Price</th>
+          <th class="px-6 py-3 text-right rounded-tr-2xl">Total</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[var(--color-brand3)]">
+        @for (sale of salesPage.content; track sale.id; let saleIndex = $index) { @for (item of
+        sale.saleItems; track itemIndex; let itemIndex = $index) {
+        <tr class="hover:bg-[var(--color-brand3)]/10 transition-colors">
+          <!-- Display # once per sale -->
+          @if (itemIndex === 0) {
+          <td
+            class="px-6 py-3 text-center font-semibold text-gray-700 align-top"
+            [attr.rowspan]="sale.saleItems?.length"
+          >
+            {{ salesPage.pageNumber * salesPage.pageSize + saleIndex + 1 }}
+          </td>
+          }
+
+          <td class="px-6 py-3 text-[var(--color-brand5)]">
+            {{ sale.orderDate | date : 'short' }}
+          </td>
+          <td class="px-6 py-3 text-[var(--color-brand5)]">
+            {{ sale.customerName }}
+          </td>
+          <td class="px-6 py-3 text-[var(--color-brand5)]">
+            {{ item.bookTitle }}
+          </td>
+          <td class="px-6 py-3 text-center text-[var(--color-brand5)]">
+            {{ item.quantity }}
+          </td>
+          <td class="px-6 py-3 text-right text-[var(--color-brand5)]">
+            ₱{{ item.pricePerItem | number : '1.2-2' }}
+          </td>
+
+          <!-- Subtotal only on first row -->
+          @if (itemIndex === 0) {
+          <td
+            class="px-6 py-3 text-right font-semibold text-[var(--color-brand2)] align-top"
+            [attr.rowspan]="sale.saleItems?.length"
+          >
+            ₱{{ sale.subtotal | number : '1.2-2' }}
+          </td>
+          }
+        </tr>
+        } }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-6">
+    <app-pagination-component
+      [pageNumber]="salesPage.pageNumber"
+      [pageTotal]="salesPage.totalPage"
+      (pageChange)="handlePageChange($event)"
+    ></app-pagination-component>
+  </div>
+  } @else {
+  <p class="text-gray-500 italic text-center py-8">No sales found.</p>
+  } } @else {
+  <div class="animate-pulse space-y-3">
+    <div class="h-6 bg-gray-300 rounded w-1/4"></div>
+    <div>
+      @for (skeleton of [1, 2, 3]; track $index) {
+      <div class="bg-gray-200 h-32 rounded-2xl"></div>
+      }
+    </div>
+    <p class="text-gray-500 italic">Loading sales...</p>
+  </div>
+  }
+</section>
