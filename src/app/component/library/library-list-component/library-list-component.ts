@@ -102,7 +102,7 @@ export class LibraryListComponent implements OnInit {
     };
 
     if (this.role() === Role.Librarian && this.libraryViewMode() === 'myLibrary') {
-      console.log('librarian request for its library');
+      log('librarian request for its library');
       filter.libraryId = this.libraryId;
     }
 
@@ -115,7 +115,7 @@ export class LibraryListComponent implements OnInit {
 
     this.libraryPage$ = this.libraryStoreService.getLibraries(effectiveFilter).pipe(
       tap((pageModel) => {
-        console.log('library pagedmodel: ', pageModel);
+        log('library pagedmodel: ', pageModel);
         this.totalPages = pageModel.totalPage;
         this.currentPage = pageModel.pageNumber;
       }),
@@ -129,7 +129,7 @@ export class LibraryListComponent implements OnInit {
 
   toggleLibraryViewMode() {
     const newMode = this.libraryViewMode() === 'allLibraries' ? 'myLibrary' : 'allLibraries';
-    console.log('new library mode is ', newMode);
+    log('new library mode is ', newMode);
     this.libraryViewMode.set(newMode);
     this.filterForm.patchValue({ libraryViewMode: newMode });
   }

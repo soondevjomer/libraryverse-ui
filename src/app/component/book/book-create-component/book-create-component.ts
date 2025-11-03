@@ -36,7 +36,7 @@ export class BookCreateComponent implements OnInit {
 
   // FUNCTIONS
   handleCreate(book: Book) {
-    console.log('handling create book');
+    log('handling create book');
 
     const inventory: Inventory = {
       availableStock: book.bookDetail.quantity ?? 0,
@@ -61,11 +61,11 @@ export class BookCreateComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.toastService.success('Book created successfully');
-          console.log('Book created successfully:', response);
+          log('Book created successfully:', response);
         },
         error: (err) => {
           this.toastService.error('Failed to create book');
-          console.error('Error during book creation:', err);
+          error('Error during book creation:', err);
         },
       });
   }

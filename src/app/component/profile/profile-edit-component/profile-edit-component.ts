@@ -45,7 +45,7 @@ export class ProfileEditComponent implements OnInit {
     this.profileForm = this.buildForm();
     if (this.profile) this.patchForm(this.profile);
 
-    console.log('profile data: ', this.profile);
+    log('profile data: ', this.profile);
 
     this.profileForm
       .get('email')
@@ -104,7 +104,7 @@ export class ProfileEditComponent implements OnInit {
 
   private patchForm(profile: Profile): void {
     if (!profile) return;
-    console.log('patching profile form..');
+    log('patching profile form..');
     this.profileForm.patchValue({
       name: profile?.name ?? '',
       username: profile?.username ?? '',

@@ -7,7 +7,7 @@ import { PaymentMethod } from '../model/payment.model';
 export class PaymentMethodDisplayPipe implements PipeTransform {
 
   transform(value: keyof typeof PaymentMethod | string | null): string {
-    console.log('payment method pipe value: ', value);
+    log('payment method pipe value: ', value);
     if (!value) return 'Unknown';
 
     const key = value as keyof typeof PaymentMethod;

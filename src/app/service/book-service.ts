@@ -6,6 +6,7 @@ import { Book } from '../model/book.model';
 import { Page } from '../model/page.model';
 import { SearchFilter } from '../model/search.model';
 import { buildHttpParams } from 'app/utils/build-http-params';
+import { log } from '@/utils/logger';
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +22,12 @@ export class BookService {
   }
 
   createBook(book: Book): Observable<Book> {
-    console.log('BOOK_SERVICE: CREATING BOOK');
+    log('BOOK_SERVICE: CREATING BOOK');
     return this.http.post<Book>(`${this.baseUrl}/books`, book);
   }
 
   createBookToLibrary(book: Book, file?: File): Observable<Book> {
-    console.log('BOOK_SERVICE: CREATING BOOK TO LIBRARY');
+    log('BOOK_SERVICE: CREATING BOOK TO LIBRARY');
 
     const payload = structuredClone(book);
 
@@ -41,7 +42,7 @@ export class BookService {
     }
 
     // Log the exact JSON we send
-    console.log('Payload JSON:', JSON.stringify(payload, null, 2));
+    log('Payload JSON:', JSON.stringify(payload, null, 2));
 
     const formData = new FormData();
     formData.append('book', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
@@ -53,7 +54,7 @@ export class BookService {
   }
 
   updateBook(bookId: number, book: Book, file?: File): Observable<Book> {
-    console.log('BOOK_SERVICE: UPDATING BOOK TO LIBRARY');
+    log('BOOK_SERVICE: UPDATING BOOK TO LIBRARY');
     const payload = structuredClone(book);
 
     // Ensure no File or nested object is serialized incorrectly
@@ -67,7 +68,7 @@ export class BookService {
     }
 
     // Log the exact JSON we send
-    console.log('Payload JSON:', JSON.stringify(payload, null, 2));
+    log('Payload JSON:', JSON.stringify(payload, null, 2));
 
     const formData = new FormData();
     formData.append('book', new Blob([JSON.stringify(book)], { type: 'application/json' }));
@@ -76,7 +77,7 @@ export class BookService {
   }
 
   copyBook(bookId: number): Observable<void> {
-    console.log('BOOK_SERVICE: COPYING BOOK');
+    log('BOOK_SERVICE: COPYING BOOK');
     return this.http.post<void>(`${this.baseUrl}/books/${bookId}/copy`, {});
   }
 

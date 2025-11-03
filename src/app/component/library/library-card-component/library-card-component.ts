@@ -30,13 +30,13 @@ export class LibraryCardComponent {
 
   onView(library: Library) {
     if (!library) return;
-    console.log('handling view of libraryId: ', library.id);
+    log('handling view of libraryId: ', library.id);
     this.view.emit(this.library);
   }
 
   onEdit(library: Library) {
     if (!library) return;
-    console.log('handling edit of libraryId: ', library.id);
+    log('handling edit of libraryId: ', library.id);
     this.edit.emit(library);
   }
 }

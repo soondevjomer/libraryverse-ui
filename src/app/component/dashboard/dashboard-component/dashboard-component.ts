@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit {
     this.libraryStat$ = this.libraryService.getLibraryStat().pipe(
       tap(() => (this.loadingLibraryStat = false)),
       catchError((error) => {
-        console.error('Error loading book: ', error);
+        error('Error loading book: ', error);
         this.errorMessage = 'Failed to load book stat.';
         this.loadingLibraryStat = false;
         return of({} as LibraryStat);
@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
     this.customerStat$ = this.customerService.getCustomerCountAndTopStat().pipe(
       tap(() => (this.loadingCustomerStat = false)),
       catchError((error) => {
-        console.error('Error loading customer: ', error);
+        error('Error loading customer: ', error);
         this.errorMessage = 'Failed to load customer stat.';
         this.loadingCustomerStat = false;
         return of({} as CustomerCountAndTopStat);
@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
     this.saleStat$ = this.saleService.getSaleStat().pipe(
       tap(() => (this.loadingSaleStat = false)),
       catchError((error) => {
-        console.error('Error loading sales: ', error);
+        error('Error loading sales: ', error);
         this.errorMessage = 'Failed to load sales stat.';
         this.loadingSaleStat = false;
         return of({} as SaleStat);
@@ -90,7 +90,7 @@ export class DashboardComponent implements OnInit {
     this.orderStat$ = this.orderService.getOrderStat().pipe(
       tap(() => (this.loadingOrderStat = false)),
       catchError((error) => {
-        console.error('Error loading sales: ', error);
+        error('Error loading sales: ', error);
         this.errorMessage = 'Failed to load sales stat.';
         this.loadingOrderStat = false;
         return of({} as OrderStat);

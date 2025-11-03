@@ -78,9 +78,9 @@ export class RegisterComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          console.log('response if username exists: ', res?.exist);
+          log('response if username exists: ', res?.exist);
           this.usernameTaken.set(!!res?.exist);
-          console.log('response exists: ', this.usernameTaken());
+          log('response exists: ', this.usernameTaken());
         },
         error: () => this.usernameTaken.set(false),
       });
@@ -105,12 +105,12 @@ export class RegisterComponent implements OnInit {
       next: () => {
         const role = this.authService.userClaim?.role;
         if (role == Role.Librarian) {
-          console.log('claims: ', this.authService.userClaim);
+          log('claims: ', this.authService.userClaim);
           this.toastService.success('Registered successfully');
           this.loading.set(false);
           this.router.navigate(['dashboard']);
         } else {
-          console.log('claims: ', this.authService.userClaim);
+          log('claims: ', this.authService.userClaim);
           this.toastService.success('Registered successfully');
           this.loading.set(false);
           this.router.navigate(['books']);
@@ -118,7 +118,7 @@ export class RegisterComponent implements OnInit {
       },
       error: (error: any) => {
         this.toastService.error('Failed to register. Please try again');
-        console.error('Register error:', error);
+        error('Register error:', error);
         this.loading.set(false);
       },
     });

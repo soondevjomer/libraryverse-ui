@@ -47,11 +47,11 @@ export class BookDetailComponent implements OnInit {
       cachedBook
         ? of(cachedBook).pipe(
             // show cached immediately
-            tap(() => console.log('Showing cached book')),
+            tap(() => log('Showing cached book')),
             switchMap(() =>
               this.bookService.getBookById(bookId).pipe(
                 // then always fetch latest
-                tap((latestBook) => console.log('Fetched latest from backend', latestBook)),
+                tap((latestBook) => log('Fetched latest from backend', latestBook)),
                 catchError((err) => {
                   this.toastService.info('No book found');
                   return of(cachedBook); // fallback to cached if API fails
@@ -61,7 +61,7 @@ export class BookDetailComponent implements OnInit {
           )
         : this.bookService.getBookById(bookId).pipe(
             // if no cache, fetch directly
-            tap((latestBook) => console.log('Fetched book from backend (no cache)', latestBook)),
+            tap((latestBook) => log('Fetched book from backend (no cache)', latestBook)),
             catchError((err) => {
               this.toastService.info('No book found');
               return of({} as Book);
@@ -77,7 +77,7 @@ export class BookDetailComponent implements OnInit {
   handleOnAddToCart(bookId: number) {
     this.cartService
       .addToCart(bookId)
-      .pipe(tap(() => console.log('Adding to cart from book detail')))
+      .pipe(tap(() => log('Adding to cart from book detail')))
       .subscribe({
         next: () => this.toastService.success('Book add to cart successfully'),
         error: () => this.toastService.error('Failed add to cart the book'),

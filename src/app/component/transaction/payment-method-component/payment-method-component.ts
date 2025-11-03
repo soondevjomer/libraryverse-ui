@@ -52,7 +52,7 @@ export class PaymentMethodComponent implements OnInit {
 
   processPayment() {
     
-    console.log('processing payment...');
+    log('processing payment...');
     let paymentRequest: PaymentRequest = {
       paymentMethod: this.paymentMethod,
       amount: this.totalAmount,
@@ -67,28 +67,28 @@ export class PaymentMethodComponent implements OnInit {
       paymentRequest.walletId = this.walletIdCtrl.value ?? '';
     }
 
-    console.log('Payment Request:', paymentRequest);
+    log('Payment Request:', paymentRequest);
 
     // Call payment service
     this.paymentService.simulatePayment(paymentRequest).subscribe({
       next: (paymentResponse: PaymentResponse) => {
         if (paymentResponse.status) {
-          console.log('Payment successful, creating order...');
+          log('Payment successful, creating order...');
 
           // Call order service
           this.orderService.createOrder(this.orderRequest).subscribe({
             next: (orderResponse: OrderResponse) => {
-              console.log('Order created:', orderResponse.orderId);
+              log('Order created:', orderResponse.orderId);
               if (orderResponse.orderId != null) {
                 this.orderService.setOrderResponse(orderResponse);
                 this.router.navigate(['orders/summary']);
               }
             },
-            error: (err) => console.error('Order creation failed:', err),
+            error: (err) => error('Order creation failed:', err),
           });
         }
       },
-      error: (err) => console.error('Payment simulation failed:', err),
+      error: (err) => error('Payment simulation failed:', err),
     });
   }
 }

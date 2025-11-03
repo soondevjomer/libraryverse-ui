@@ -33,20 +33,20 @@ export class LibraryEditComponent implements OnInit {
   loading = signal<boolean>(false);
 
   ngOnInit(): void {
-    console.log('First check if library id and user library id is same to access this');
-    console.log('Library Edit Component on init');
+    log('First check if library id and user library id is same to access this');
+    log('Library Edit Component on init');
     this.library = window.history.state['library'];
     if (!this.library) {
       this.toastService.info('No library found');
       return;
     }
 
-    console.log('library: ', this.library);
+    log('library: ', this.library);
   }
 
   handleLibraryEdit(library: Library) {
     if (!library) return;
-    console.log('UPDATING LIBRARY WITH THIS: ', library);
+    log('UPDATING LIBRARY WITH THIS: ', library);
     this.loading.set(true);
 
     const file = library.libraryCover;
@@ -60,12 +60,12 @@ export class LibraryEditComponent implements OnInit {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (updatedLibrary) => {
-          console.log('Library updated successfully: ', updatedLibrary);
+          log('Library updated successfully: ', updatedLibrary);
           this.toastService.success('Library updated successfully');
           this.router.navigate(['libraries', updatedLibrary.id]);
         },
         error: (error) => {
-          console.error('Error updating library: ', error);
+          error('Error updating library: ', error);
           this.toastService.error('Failed to update library');
         },
       });

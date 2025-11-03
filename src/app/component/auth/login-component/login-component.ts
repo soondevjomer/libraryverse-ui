@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.toastService.error('Login failed');
-        console.error('Login error:', err);
+        error('Login error:', err);
         this.isLoading.set(false);
       },
     });

@@ -14,7 +14,7 @@ export class ProfileService {
   baseUrl = environment.apiBaseUrl;
 
   updateProfile(profile: Profile, file?: File): Observable<Profile> {
-    console.log('Profile updating check file if there is ', file);
+    log('Profile updating check file if there is ', file);
 
     const payload = structuredClone(profile);
 
@@ -30,7 +30,7 @@ export class ProfileService {
 
   emailExist(checkRequest: CheckRequest): Observable<{exist:boolean}> {
 
-    console.log('email request: ', checkRequest);
+    log('email request: ', checkRequest);
 
     if (checkRequest.current==null || checkRequest.current==undefined) checkRequest.current = '';
 
@@ -39,7 +39,7 @@ export class ProfileService {
 
   usernameExist(checkRequest:CheckRequest): Observable<{exist:boolean}> {
 
-    console.log('username request: ', checkRequest);
+    log('username request: ', checkRequest);
 
     if (checkRequest.current==null || checkRequest.current==undefined) checkRequest.current = '';
 

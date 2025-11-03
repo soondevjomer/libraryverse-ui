@@ -29,7 +29,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     const cachedProfile = window.history.state['profile'] as Profile | undefined;
-    console.log('cachedProfile: ', cachedProfile);
+    log('cachedProfile: ', cachedProfile);
     if (cachedProfile) {
       this.profile.set(cachedProfile);
     } else {
@@ -47,7 +47,7 @@ export class ProfileComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        console.error('Failed to load profile:', err);
+        error('Failed to load profile:', err);
         this.error.set('Failed to load profile.');
         this.loading.set(false);
       },

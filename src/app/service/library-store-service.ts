@@ -45,7 +45,7 @@ export class LibraryStoreService {
       }),
       catchError(error=>{
         this.error.set('Failed to load books');
-        console.error('Fetch error: ', error);
+        error('Fetch error: ', error);
         return of(this.cache$.value ?? { content: [], totalPage: 0, pageNumber: 0, totalElement: 0, pageSize: 0 });
       }),
       tap(()=>this.loading.set(false))
@@ -55,7 +55,7 @@ export class LibraryStoreService {
   private refreshInBackground(filter: SearchFilter) {
     this.libraryService.getLibraryByPage(filter).subscribe({
       next: (page) => this.cache$.next(page),
-      error: (err) => console.warn('Background refresh failed:', err),
+      error: (err) => warn('Background refresh failed:', err),
     });
   }
 

@@ -30,7 +30,7 @@ export class CustomerListComponent implements OnInit {
   }
 
   onView(customer: Customer) {
-    console.log('on view this customer: ', customer);
+    log('on view this customer: ', customer);
     this.router.navigate(['customers', customer.id], { state: {customer} });
   }
 

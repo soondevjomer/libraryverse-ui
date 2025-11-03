@@ -17,7 +17,7 @@ export class CustomerDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.customer = window.history.state['customer'];
-    console.log('CUSTOMER: ', this.customer);
+    log('CUSTOMER: ', this.customer);
   }
 
   handleEdit(customerId: number) {}

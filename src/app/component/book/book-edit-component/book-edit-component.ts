@@ -40,20 +40,20 @@ export class BookEditComponent implements OnInit {
   messageType = signal<'success' | 'error' | 'info'>('info');
 
   ngOnInit(): void {
-    console.log('Book Edit Component on init');
+    log('Book Edit Component on init');
     this.book = window.history.state['book'];
     if (!this.book) {
       this.toastService.info('Book not found');
       return;
     }
 
-    console.log('book: ', this.book);
+    log('book: ', this.book);
   }
 
   handleBookEdit(book: Book) {
     if (!book) return;
 
-    console.log('UPDATING BOOK WITH THIS:', book);
+    log('UPDATING BOOK WITH THIS:', book);
     this.loading.set(true);
 
     const file = book.bookDetail.bookCover;
@@ -69,11 +69,11 @@ export class BookEditComponent implements OnInit {
       .subscribe({
         next: (updatedBook) => {
           this.toastService.success('Book updated successfully');
-          console.log('Book updated successfully:', updatedBook);
+          log('Book updated successfully:', updatedBook);
           this.router.navigate(['books', updatedBook.id], { state: { book: updatedBook } });
         },
         error: (error) => {
-          console.error('Error updating book:', error);
+          error('Error updating book:', error);
           this.toastService.error('Failed to update book');
         },
       });

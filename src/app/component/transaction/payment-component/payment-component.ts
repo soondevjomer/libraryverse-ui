@@ -51,7 +51,7 @@ export class PaymentComponent implements OnInit {
   ngOnInit(): void {
     this.buildPaymentForm();
     this.selected = window.history.state['selected'] ?? [];
-    console.log('SELECTED: ', this.selected);
+    log('SELECTED: ', this.selected);
   }
 
   buildPaymentForm() {
@@ -72,18 +72,18 @@ export class PaymentComponent implements OnInit {
 
   createOrderCall() {
     const orderRequest = this.createOrderRequest();
-    console.log('Creating order...', orderRequest);
+    log('Creating order...', orderRequest);
 
     this.orderService.createOrder(orderRequest).subscribe({
       next: (response) => {
         this.orderService.setOrderResponse(response);
-        console.log('Order created successfully:', response);
-        console.log('Order placed successfully!');
+        log('Order created successfully:', response);
+        log('Order placed successfully!');
         this.router.navigate(['orders/summary']);
       },
       error: (err) => {
-        console.error('Error creating order:', err);
-        console.error('Something went wrong while creating order.');
+        error('Error creating order:', err);
+        error('Something went wrong while creating order.');
       },
     });
   }
@@ -102,13 +102,13 @@ export class PaymentComponent implements OnInit {
       ?.value as keyof typeof PaymentMethod;
 
     if (this.selected != null && paymentMethod != null) {
-      console.log('Buying...');
+      log('Buying...');
 
       if (paymentMethod === 'COD') {
-        console.log('Payment Method is COD');
+        log('Payment Method is COD');
         this.createOrderCall();
       } else {
-        console.log('Payment Method is BANK/WALLET');
+        log('Payment Method is BANK/WALLET');
         this.router.navigate(['payment/process'], {
           state: this.createOrderRequest(),
         });

@@ -32,12 +32,12 @@ export class AuthService {
         const token = JSON.parse(storedToken) as Token;
         this.setToken(token);
       } catch {
-        console.error('TRYING TO SET THE TOKEN FROM STORED TOKEN FAILED');
+        error('TRYING TO SET THE TOKEN FROM STORED TOKEN FAILED');
       }
     }
     // EFFECT: WHEN TOKEN CHANGES, UPDATE CLAIMS
     effect(() => {
-      console.log('TOKEN CHANGES UPDATING USER CLAIM...');
+      log('TOKEN CHANGES UPDATING USER CLAIM...');
       const t = this._accessToken();
       this._userClaim.set(t ? jwtDecode<UserClaim>(t) : null);
     });
@@ -46,7 +46,7 @@ export class AuthService {
   // FUNCTIONS
   private setToken(token: Token) {
     if (token.accessToken !== this.accessTokenValue) {
-      console.log('SETTING THE TOKEN...');
+      log('SETTING THE TOKEN...');
       this._accessToken.set(token.accessToken);
       this._userClaim.set(jwtDecode<UserClaim>(token.accessToken));
       localStorage.setItem('token', JSON.stringify(token));
@@ -59,8 +59,8 @@ export class AuthService {
     this.setToken(token);
   }
   get accessTokenValue() {
-    console.log('GETTING ACCESS TOKEN VALUE...');
-    console.log('GETTING USER CLAIM: ', this.userClaim);
+    log('GETTING ACCESS TOKEN VALUE...');
+    log('GETTING USER CLAIM: ', this.userClaim);
     return this._accessToken();
   }
   get userClaim(): UserClaim | null {
@@ -68,7 +68,7 @@ export class AuthService {
   }
 
   hasRole(role: Role) {
-    console.log('IS USER HAS ROLE?');
+    log('IS USER HAS ROLE?');
     const claims = this._userClaim();
     return !!claims && claims.role === role;
   }
@@ -89,7 +89,7 @@ export class AuthService {
   }
 
   logout() {
-    console.log('LOGOUT USER...');
+    log('LOGOUT USER...');
     this._accessToken.set(null);
     this._userClaim.set(null);
     localStorage.removeItem('token');
@@ -98,17 +98,17 @@ export class AuthService {
 
   // API CALL
   login(loginRequest: LoginRequest): Observable<Token> {
-    console.log('LOGGING IN USER...');
+    log('LOGGING IN USER...');
     return this.http.post<Token>(`${this.baseUrl}/auth/login`, loginRequest).pipe(
       switchMap((token) => {
-        console.log(jwtDecode(token.accessToken));
+        log(jwtDecode(token.accessToken));
         this.setToken(token);
         return of(token);
       })
     );
   }
   register(registerRequest: RegisterRequest): Observable<Token> {
-    console.log('REGISTERING USER...');
+    log('REGISTERING USER...');
     return this.http.post<Token>(`${this.baseUrl}/auth/register`, registerRequest).pipe(
       switchMap((token) => {
         this.setToken(token);
@@ -118,7 +118,7 @@ export class AuthService {
   }
   refreshToken(): Observable<Token> {
     // simple refresh flow; coordinate via refreshing$
-    console.log('REFRESHING TOKEN ...');
+    log('REFRESHING TOKEN ...');
     if (this.refreshing$.value) {
       // if already refreshing, wait until it's done and return updated token
       return this.refreshing$.pipe(
@@ -145,7 +145,7 @@ export class AuthService {
       }),
       catchError((error) => {
         this.refreshing$.next(false);
-        console.error('REFRESHING TOKEN ERROR', error);
+        error('REFRESHING TOKEN ERROR', error);
         this.logout();
         return throwError(() => error);
       })

@@ -24,23 +24,23 @@ export class BookCopyComponent implements OnInit {
   loading = signal<boolean>(false);
 
   ngOnInit(): void {
-      console.log('Book Copy Component on init');
+      log('Book Copy Component on init');
       this.book = window.history.state['book'];
       if (!this.book) {
-        console.log('No book copied');
+        log('No book copied');
         return;
       }
-      console.log('bookL: ', this.book);
+      log('bookL: ', this.book);
   }
 
   handleBookCopy(book: Book) {
     if (!book) return;
-    console.log('CREATE THE COPIED BOOK: ',book);
+    log('CREATE THE COPIED BOOK: ',book);
     book.id = 0;
-    console.log('book now id: ', book.id);
+    log('book now id: ', book.id);
     this.bookService.createBookToLibrary(book).subscribe({
-      next:res=>console.log('book copy created: ', res.id),
-      error:error=>console.error('book copying error: ', error)
+      next:res=>log('book copy created: ', res.id),
+      error:error=>error('book copying error: ', error)
     });
   }
 

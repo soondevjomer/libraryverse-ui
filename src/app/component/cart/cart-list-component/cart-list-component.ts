@@ -152,7 +152,7 @@ export class CartListComponent implements OnInit {
 
     if (selected.length === 0) return;
 
-    console.log('Checkout items:', selected);
+    log('Checkout items:', selected);
     this.router.navigate(['/payment'], { state: { selected } });
   }
 
@@ -177,10 +177,10 @@ export class CartListComponent implements OnInit {
           librariesArray.removeAt(libIndex);
         }
 
-        console.log(`Removed cart ${cartId}`);
+        log(`Removed cart ${cartId}`);
       },
       error: (err) => {
-        console.error('Error removing cart item:', err);
+        error('Error removing cart item:', err);
       },
     });
   }

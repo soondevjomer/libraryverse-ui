@@ -4,6 +4,7 @@ import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from
 import { AuthService } from '../service/auth-service';
 import { Token } from '../model/auth.model';
 import { Router } from '@angular/router';
+import { log, error } from '@/utils/logger';
 
 const refreshTokenSubject$ = new BehaviorSubject<string | null>(null);
 let isRefreshing = false;
@@ -13,7 +14,7 @@ function isPublicEndpoint(req: HttpRequest<unknown>): boolean {
   const path = new URL(req.url, window.location.origin).pathname;
   const method = req.method.toUpperCase();
 
-  console.log('%c[AuthInterceptor] Checking endpoint:', 'color: cyan', path, 'Method:', method);
+  log('%c[AuthInterceptor] Checking endpoint:', 'color: cyan', path, 'Method:', method);
 
   /** Publicly accessible endpoints */
   const publicEndpoints = [
@@ -47,7 +48,7 @@ function isPublicEndpoint(req: HttpRequest<unknown>): boolean {
 
   // If it matches any secure pattern → always private
   if (securePatterns.some(r => r.test(path))) {
-    console.log('%c[AuthInterceptor] Matched secure pattern → PRIVATE', 'color: red', path);
+    log('%c[AuthInterceptor] Matched secure pattern → PRIVATE', 'color: red', path);
     return false;
   }
 
@@ -58,7 +59,7 @@ function isPublicEndpoint(req: HttpRequest<unknown>): boolean {
     return matchesPath && matchesMethod;
   });
 
-  console.log(
+  log(
     `%c[AuthInterceptor] Result → ${isPublic ? 'PUBLIC' : 'PRIVATE'}`,
     `color: ${isPublic ? 'green' : 'red'}`,
     path
@@ -93,9 +94,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   return next(authReq).pipe(
-    catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        console.log('%c[AuthInterceptor] 401 detected → trying refresh', 'color: orange');
+    catchError((httpError: HttpErrorResponse) => {
+      if (httpError.status === 401) {
+        log('%c[AuthInterceptor] 401 detected → trying refresh', 'color: orange');
 
         // Only refresh once at a time
         if (!isRefreshing) {
@@ -104,7 +105,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
           return authService.refreshToken().pipe(
             switchMap((token: Token) => {
-              console.log('%c[AuthInterceptor] Token refresh success', 'color: green');
+              log('%c[AuthInterceptor] Token refresh success', 'color: green');
               isRefreshing = false;
               authService.updateToken(token);
               refreshTokenSubject$.next(token.accessToken);
@@ -116,7 +117,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               return next(retryReq);
             }),
             catchError(refreshError => {
-              console.error('[AuthInterceptor] Refresh failed', refreshError);
+              error('[AuthInterceptor] Refresh failed', refreshError);
               isRefreshing = false;
               refreshTokenSubject$.next(null);
               authService.logout();
@@ -139,7 +140,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       // Pass through all other errors
-      return throwError(() => error);
+      return throwError(() => httpError);
     })
   );
 };

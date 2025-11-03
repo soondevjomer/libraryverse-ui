@@ -56,7 +56,7 @@ export class OrderService {
     page: number = 0,
     size: number = 10
   ): Observable<Page<StoreOrder>> {
-    console.log('store order status: ', status);
+    log('store order status: ', status);
     let params = new HttpParams()
       .set('page', page ?? 0)
       .set('size', size ?? 10)

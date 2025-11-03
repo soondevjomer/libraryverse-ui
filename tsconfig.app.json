@@ -7,7 +7,8 @@
     "types": [],
     "baseUrl": "src",
     "paths": {
-      "@env/*": ["environment/*"]
+      "@env/*": ["environment/*"],
+      "@/*":["app/*"]
     }
   },
   "include": [

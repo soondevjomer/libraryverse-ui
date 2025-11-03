@@ -1,11 +1,12 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { log } from '@/utils/logger';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { filter, Observable } from 'rxjs';
-import { Library, LibraryRequest, LibraryStat } from '../model/library.model';
 import { environment } from '@env/environment';
+import { buildHttpParams } from 'app/utils/build-http-params';
+import { Observable } from 'rxjs';
+import { Library, LibraryRequest, LibraryStat } from '../model/library.model';
 import { Page } from '../model/page.model';
 import { SearchFilter } from '../model/search.model';
-import { buildHttpParams } from 'app/utils/build-http-params';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class LibraryService {
   }
 
   updateLibraryById(libraryId: number, libraryReq: LibraryRequest, file?: File): Observable<Library> {
-    console.log('update library by id');
+    log('update library by id');
     const payload = structuredClone(libraryReq);
   
     // Ensure no File or nested object is serialized incorrectly
@@ -38,7 +39,7 @@ export class LibraryService {
       payload.libraryCover = '';
     }
 
-    console.log('Payload JSON:', JSON.stringify(payload, null, 2));
+    log('Payload JSON:', JSON.stringify(payload, null, 2));
     
     const formData = new FormData();
     formData.append('library', new Blob([JSON.stringify(libraryReq)], { type: 'application/json' }));

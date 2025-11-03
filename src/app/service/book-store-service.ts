@@ -4,6 +4,7 @@ import { Page } from '../model/page.model';
 import { Book } from '../model/book.model';
 import { SearchFilter } from '../model/search.model';
 import { BookService } from './book-service';
+import { error, warn } from '@/utils/logger';
 
 @Injectable({ providedIn: 'root' })
 export class BookStoreService {
@@ -36,7 +37,11 @@ export class BookStoreService {
   }
 
   /** Internal fetch logic */
-  private fetchBooks(filter: SearchFilter, replaceCache = true, role?: any): Observable<Page<Book>> {
+  private fetchBooks(
+    filter: SearchFilter,
+    replaceCache = true,
+    role?: any
+  ): Observable<Page<Book>> {
     this.loading.set(true);
     this.error.set(null);
     this.lastFilter = filter;
@@ -47,9 +52,17 @@ export class BookStoreService {
       }),
       catchError((err) => {
         this.error.set('Failed to load books');
-        console.error('Fetch error:', err);
+        error('Fetch error:', err);
         // fallback to cached data if available
-        return of(this.cache$.value ?? { content: [], totalPage: 0, pageNumber: 0, totalElement: 0, pageSize: 0 });
+        return of(
+          this.cache$.value ?? {
+            content: [],
+            totalPage: 0,
+            pageNumber: 0,
+            totalElement: 0,
+            pageSize: 0,
+          }
+        );
       }),
       tap(() => this.loading.set(false))
     );
@@ -59,7 +72,7 @@ export class BookStoreService {
   private refreshInBackground(filter: SearchFilter) {
     this.bookService.getBooksByPage(filter).subscribe({
       next: (page) => this.cache$.next(page),
-      error: (err) => console.warn('Background refresh failed:', err),
+      error: (err) => warn('Background refresh failed:', err),
     });
   }
 

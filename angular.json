@@ -37,6 +37,14 @@
                   "maximumError": "8kB"
                 }
               ],
+              
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": true
+              },
+              "sourceMap": false,
+              "extractLicenses": true,
               "outputHashing": "all",
               "fileReplacements": [
                 {

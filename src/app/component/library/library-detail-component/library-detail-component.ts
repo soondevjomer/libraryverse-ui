@@ -73,7 +73,7 @@ export class LibraryDetailComponent implements OnInit {
     return this.libraryService.getLibraryById(libraryId).pipe(
       tap(() => this.loading.set(false)),
       catchError((error) => {
-        console.error('Error loading library:', error);
+        error('Error loading library:', error);
         this.errorMessage.set('Failed to load library.');
         this.loading.set(false);
         return of({} as Library);
@@ -93,7 +93,7 @@ export class LibraryDetailComponent implements OnInit {
       }),
       finalize(() => this.loading.set(false)),
       catchError((err) => {
-        console.error('Error loading books:', err);
+        error('Error loading books:', err);
         this.errorMessage.set('Failed to load books.');
         return of({
           content: [],
@@ -117,12 +117,12 @@ export class LibraryDetailComponent implements OnInit {
   }
 
   handleOnBookEdit(book: Book) {
-    console.log('edit book with id');
+    log('edit book with id');
     this.router.navigate(['books/edit', book.id], { state: { book } });
   }
 
   handleOnCopy(book: Book) {
-    console.log('Copying book:', book);
+    log('Copying book:', book);
     this.router.navigate(['books/create'], { state: { book } });
   }
 
@@ -145,7 +145,7 @@ export class LibraryDetailComponent implements OnInit {
     this.cartService.addToCart(book.id).subscribe({
       next: () => this.toastService.success('Book added to cart successfully'),
       error: (err) => {
-        console.error('Add to cart failed:', err);
+        error('Add to cart failed:', err);
         this.toastService.error('Failed to add book to cart');
       },
     });

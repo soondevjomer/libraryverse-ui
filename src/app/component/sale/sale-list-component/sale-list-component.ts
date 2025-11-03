@@ -29,7 +29,7 @@ export class SaleListComponent implements OnInit {
   }
 
   handlePageChange(pageNumber: number) {
-    console.log('pagenumber changedd....');
+    log('pagenumber changedd....');
     this.salesPage$ = this.loadSalesPage(pageNumber);
   }
 }
