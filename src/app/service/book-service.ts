@@ -1,10 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '../environment/environment';
-import { BehaviorSubject, filter, Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '@env/environment';
 import { Book } from '../model/book.model';
 import { Page } from '../model/page.model';
 import { SearchFilter } from '../model/search.model';
+import { buildHttpParams } from 'app/utils/build-http-params';
 
 @Injectable({
   providedIn: 'root',
@@ -80,21 +81,7 @@ export class BookService {
   }
 
   getBooksByPage(filters?: SearchFilter): Observable<Page<Book>> {
-    if (filters?.sortBy == 'TITLE') {
-      console.log('cause filter is title then it will became name');
-      filters.sortBy = 'NAME';
-    }
-
-    let params = new HttpParams()
-      .set('page', filters?.page ?? 0)
-      .set('search', filters?.search ?? '')
-      .set('sortBy', filters?.sortBy ?? '')
-      .set('sortDirection', filters?.sortDirection ?? '')
-      .set('libraryId', filters?.libraryId ?? '');
-    console.log('sortBy value: ', filters?.sortBy);
-    console.log('sortDirection value: ', filters?.sortDirection);
-    console.log('libraryId: ', filters?.libraryId ?? 0);
-
+    const params = buildHttpParams(filters);
     return this.http.get<Page<Book>>(`${this.baseUrl}/books`, { params });
   }
 

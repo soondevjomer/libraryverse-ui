@@ -7,7 +7,7 @@ import { Library } from '../../../model/library.model';
 import { Book } from '../../../model/book.model';
 import { Page } from '../../../model/page.model';
 import { SearchFilter } from '../../../model/search.model';
-import { environment } from '../../../environment/environment';
+import { environment } from '@env/environment';
 
 import { LibraryService } from '../../../service/library-service';
 import { AuthService } from '../../../service/auth-service';

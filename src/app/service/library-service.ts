@@ -2,9 +2,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { filter, Observable } from 'rxjs';
 import { Library, LibraryRequest, LibraryStat } from '../model/library.model';
-import { environment } from '../environment/environment';
+import { environment } from '@env/environment';
 import { Page } from '../model/page.model';
 import { SearchFilter } from '../model/search.model';
+import { buildHttpParams } from 'app/utils/build-http-params';
 
 @Injectable({
   providedIn: 'root'
@@ -20,15 +21,7 @@ export class LibraryService {
   }
 
   getLibraryByPage(filters: SearchFilter): Observable<Page<Library>> {
-    let params = new HttpParams()
-      .set('page',  filters?.page ?? 0)
-      .set('search', filters?.search ?? '')
-      .set('sortBy', filters?.sortBy ?? '')
-      .set('sortDirection', filters?.sortDirection ?? '')
-      .set('libraryId', filters?.libraryId ?? '');
-
-      console.log('library id is : ', filters.libraryId);
-
+    const params = buildHttpParams(filters);
     return this.http.get<Page<Library>>(`${this.baseUrl}/libraries`, { params });
   }
 

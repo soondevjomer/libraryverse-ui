@@ -6,9 +6,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Book } from '../../../model/book.model';
 import { FormMode, Role } from '../../../model/auth.model';
-import { BookService } from '../../../service/book-service';
+import { Book } from '../../../model/book.model';
 
 @Component({
   selector: 'app-book-form-component',
@@ -18,7 +17,6 @@ import { BookService } from '../../../service/book-service';
 })
 export class BookFormComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private bookService = inject(BookService);
 
   @Input() book!: Book;
   @Input() role!: Role;

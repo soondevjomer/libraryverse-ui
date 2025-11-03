@@ -6,7 +6,7 @@ import { Role, UserClaim } from '../../../model/auth.model';
 import { NAV_ITEMS, Navigation } from '../../../model/navigation.model';
 import { LucideAngularModule } from 'lucide-angular';
 import { ToastComponent } from '../../shared/toast-component/toast-component';
-import { environment } from '../../../environment/environment';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-main-component',

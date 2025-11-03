@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../environment/environment';
+import { environment } from '@env/environment';
 import { OrderRequest, OrderResponse, OrderStat, OrderStatus, StoreOrder } from '../model/order.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Page } from '../model/page.model';

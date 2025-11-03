@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { Profile } from '../../../model/profile.model';
-import { environment } from '../../../environment/environment';
+import { environment } from '@env/environment';
 import { AuthService } from '../../../service/auth-service';
 import { Router } from '@angular/router';
 import { ProfileService } from '../../../service/profile-service'; // make sure this exists

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../environment/environment';
+import { environment } from '@env/environment';
 import { Page } from '../model/page.model';
 import { MyCart } from '../model/cart.model';
 

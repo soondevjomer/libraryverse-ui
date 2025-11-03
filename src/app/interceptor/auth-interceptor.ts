@@ -24,6 +24,7 @@ function isPublicEndpoint(req: HttpRequest<unknown>): boolean {
     { pattern: '/libraries/:libraryId', methods: ['GET'] },
     { pattern: '/books', methods: ['GET'] },
     { pattern: '/books/:bookId', methods: ['GET'] },
+    { pattern: '/genres', methods: ['GET'] },
     { pattern: '/files', methods: ['GET'] },
     { pattern: '/profile/check-email', methods: ['POST'] },
     { pattern: '/profile/check-username', methods: ['POST'] },

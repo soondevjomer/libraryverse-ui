@@ -2,7 +2,7 @@ import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { LoginRequest, RegisterRequest, Role, Token, UserClaim } from '../model/auth.model';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, catchError, Observable, of, switchMap, throwError } from 'rxjs';
-import { environment } from '../environment/environment';
+import { environment } from '@env/environment';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 

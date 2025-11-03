@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Book } from '../../../model/book.model';
 import { Role } from '../../../model/auth.model';
 import { DecimalPipe, NgClass } from '@angular/common';
-import { environment } from '../../../environment/environment';
+import { environment } from '@env/environment';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

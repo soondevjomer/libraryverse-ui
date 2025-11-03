@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Customer } from '../../../model/customer.model';
 import { LucideAngularModule } from 'lucide-angular';
-import { environment } from '../../../environment/environment';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-customer-detail-component',

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../environment/environment';
+import { environment } from '@env/environment';
 import { CheckRequest, Profile } from '../model/profile.model';
 import { Observable } from 'rxjs';
 

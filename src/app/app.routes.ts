@@ -1,16 +1,10 @@
 import { Routes } from '@angular/router';
-import { MainComponent } from './component/layout/main-component/main-component';
 import { LoginComponent } from './component/auth/login-component/login-component';
 import { RegisterComponent } from './component/auth/register-component/register-component';
-import { BookListComponent } from './component/book/book-list-component/book-list-component';
-import { authGuard } from './guard/auth-guard';
-import { BookCreateComponent } from './component/book/book-create-component/book-create-component';
-import { Role } from './model/auth.model';
 import { ForbiddenComponent } from './component/layout/forbidden-component/forbidden-component';
-import { BookEditComponent } from './component/book/book-edit-component/book-edit-component';
-import { LibraryEditComponent } from './component/library/library-edit-component/library-edit-component';
-import { CartListComponent } from './component/cart/cart-list-component/cart-list-component';
-import { NotFoundComponent } from './component/layout/not-found-component/not-found-component';
+import { MainComponent } from './component/layout/main-component/main-component';
+import { authGuard } from './guard/auth-guard';
+import { Role } from './model/auth.model';
 
 export const routes: Routes = [
   {

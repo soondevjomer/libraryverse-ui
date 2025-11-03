@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Page } from '../model/page.model';
 import { Observable } from 'rxjs';
 import { Customer, CustomerCountAndTopStat } from '../model/customer.model';
-import { environment } from '../environment/environment';
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',

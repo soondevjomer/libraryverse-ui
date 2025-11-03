@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Library } from '../../../model/library.model';
 import { Role } from '../../../model/auth.model';
-import { environment } from '../../../environment/environment';
+import { environment } from '@env/environment';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

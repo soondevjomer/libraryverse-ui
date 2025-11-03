@@ -9,7 +9,7 @@ import { Role } from '../../../model/auth.model';
 import { CartService } from '../../../service/cart-service';
 import { ToastService } from '../../../service/toast-service';
 import { Cart } from '../../../model/cart.model';
-import { environment } from '../../../environment/environment';
+import { environment } from '@env/environment';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
