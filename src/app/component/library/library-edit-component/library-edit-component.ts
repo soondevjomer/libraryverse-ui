@@ -1,12 +1,13 @@
+import { log } from '@/utils/logger';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Library } from '../../../model/library.model';
-import { LibraryService } from '../../../service/library-service';
-import { finalize } from 'rxjs';
 import { Router } from '@angular/router';
-import { LibraryFormComponent } from '../library-form-component/library-form-component';
-import { AuthService } from '../../../service/auth-service';
+import { finalize } from 'rxjs';
 import { FormMode } from '../../../model/auth.model';
+import { Library } from '../../../model/library.model';
+import { AuthService } from '../../../service/auth-service';
+import { LibraryService } from '../../../service/library-service';
 import { ToastService } from '../../../service/toast-service';
+import { LibraryFormComponent } from '../library-form-component/library-form-component';
 
 @Component({
   selector: 'app-library-edit-component',

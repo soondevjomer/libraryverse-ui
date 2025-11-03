@@ -1,10 +1,11 @@
+import { error } from '@/utils/logger';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../../service/auth-service';
 import { Router } from '@angular/router';
-import { LoginRequest, Role } from '../../../model/auth.model';
-import { ToastService } from '../../../service/toast-service';
 import { LucideAngularModule } from 'lucide-angular';
+import { LoginRequest, Role } from '../../../model/auth.model';
+import { AuthService } from '../../../service/auth-service';
+import { ToastService } from '../../../service/toast-service';
 
 @Component({
   selector: 'app-login-component',
@@ -32,7 +33,7 @@ export class LoginComponent implements OnInit {
 
   handleLogin() {
     if (this.loginForm.invalid) {
-      this.toastService.info("Please fill up required fields");
+      this.toastService.info('Please fill up required fields');
       this.isLoading.set(false);
       return;
     }
@@ -45,8 +46,7 @@ export class LoginComponent implements OnInit {
         if (role == Role.Librarian) {
           this.toastService.success('Login successfully');
           this.router.navigate(['dashboard']);
-        }
-        else {
+        } else {
           this.toastService.success('Login successfully');
           this.router.navigate(['books']);
         }

@@ -11,6 +11,7 @@ import { ToastService } from '../../../service/toast-service';
 import { Cart } from '../../../model/cart.model';
 import { environment } from '@env/environment';
 import { LucideAngularModule } from 'lucide-angular';
+import { log } from '@/utils/logger';
 
 @Component({
   selector: 'app-book-detail-component',
@@ -42,7 +43,7 @@ export class BookDetailComponent implements OnInit {
 
     this.loading.set(true);
 
-  // Start with cachedBook if available, then fetch the latest
+    // Start with cachedBook if available, then fetch the latest
     this.book$ = (
       cachedBook
         ? of(cachedBook).pipe(

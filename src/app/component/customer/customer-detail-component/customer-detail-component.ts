@@ -1,8 +1,8 @@
-import { AsyncPipe } from '@angular/common';
+import { log } from '@/utils/logger';
 import { Component, OnInit } from '@angular/core';
-import { Customer } from '../../../model/customer.model';
-import { LucideAngularModule } from 'lucide-angular';
 import { environment } from '@env/environment';
+import { LucideAngularModule } from 'lucide-angular';
+import { Customer } from '../../../model/customer.model';
 
 @Component({
   selector: 'app-customer-detail-component',
@@ -11,7 +11,6 @@ import { environment } from '@env/environment';
   styles: ``,
 })
 export class CustomerDetailComponent implements OnInit {
-
   customer!: Customer;
   baseUrl = environment.apiBaseUrl;
 

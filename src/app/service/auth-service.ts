@@ -5,6 +5,7 @@ import { BehaviorSubject, catchError, Observable, of, switchMap, throwError } fr
 import { environment } from '@env/environment';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { error, log } from '@/utils/logger';
 
 @Injectable({
   providedIn: 'root',

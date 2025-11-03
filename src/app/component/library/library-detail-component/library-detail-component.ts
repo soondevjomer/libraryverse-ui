@@ -1,22 +1,23 @@
-import { AsyncPipe, CurrencyPipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, finalize, Observable, of, tap } from 'rxjs';
 
-import { Library } from '../../../model/library.model';
+import { environment } from '@env/environment';
 import { Book } from '../../../model/book.model';
+import { Library } from '../../../model/library.model';
 import { Page } from '../../../model/page.model';
 import { SearchFilter } from '../../../model/search.model';
-import { environment } from '@env/environment';
 
-import { LibraryService } from '../../../service/library-service';
-import { AuthService } from '../../../service/auth-service';
-import { CartService } from '../../../service/cart-service';
-import { PaginationComponent } from '../../shared/pagination-component/pagination-component';
-import { BookStoreService } from '../../../service/book-store-service';
-import { BookCardComponent } from '../../book/book-card-component/book-card-component';
+import { log, error } from '@/utils/logger';
 import { LucideAngularModule } from 'lucide-angular';
+import { AuthService } from '../../../service/auth-service';
+import { BookStoreService } from '../../../service/book-store-service';
+import { CartService } from '../../../service/cart-service';
+import { LibraryService } from '../../../service/library-service';
 import { ToastService } from '../../../service/toast-service';
+import { BookCardComponent } from '../../book/book-card-component/book-card-component';
+import { PaginationComponent } from '../../shared/pagination-component/pagination-component';
 
 @Component({
   selector: 'app-library-detail-component',

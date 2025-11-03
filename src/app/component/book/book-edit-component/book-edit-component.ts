@@ -1,15 +1,14 @@
-import { Component, inject, OnInit, Signal, signal } from '@angular/core';
+import { log } from '@/utils/logger';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { finalize, Observable } from 'rxjs';
 import { FormMode } from '../../../model/auth.model';
 import { Book } from '../../../model/book.model';
-import { BookService } from '../../../service/book-service';
-import { BookFormComponent } from '../book-form-component/book-form-component';
-import { catchError, finalize, Observable, of, switchMap, take, tap } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
-import { ImageService } from '../../../service/image-service';
-import { Message, MessageType } from '../../../model/utils.model';
 import { AuthService } from '../../../service/auth-service';
+import { BookService } from '../../../service/book-service';
+import { ImageService } from '../../../service/image-service';
 import { ToastService } from '../../../service/toast-service';
+import { BookFormComponent } from '../book-form-component/book-form-component';
 
 @Component({
   selector: 'app-book-edit-component',

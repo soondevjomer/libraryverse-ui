@@ -7,6 +7,7 @@ import { ToastService } from '../../../service/toast-service';
 import { debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { ProfileService } from '../../../service/profile-service';
 import { LucideAngularModule } from 'lucide-angular';
+import { log } from '@/utils/logger';
 
 @Component({
   selector: 'app-register-component',

@@ -1,22 +1,19 @@
-import { Component, inject, OnInit, effect, signal } from '@angular/core';
-import { Cart, MyCart } from '../../../model/cart.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PaymentMethod, PaymentRequest } from '../../../model/payment.model';
-import { PaymentService } from '../../../service/payment-service';
-import { OrderService } from '../../../service/order-service';
-import { OrderItem, OrderRequest } from '../../../model/order.model';
-import { JsonPipe } from '@angular/common';
+import { log, error } from '@/utils/logger';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-  ɵInternalFormsSharedModule,
 } from '@angular/forms';
-import { Customer } from '../../../model/customer.model';
-import { ToastService } from '../../../service/toast-service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Cart } from '../../../model/cart.model';
+import { OrderItem, OrderRequest } from '../../../model/order.model';
+import { PaymentMethod } from '../../../model/payment.model';
 import { AuthService } from '../../../service/auth-service';
+import { OrderService } from '../../../service/order-service';
+import { ToastService } from '../../../service/toast-service';
 
 @Component({
   selector: 'app-payment-component',
@@ -45,8 +42,8 @@ export class PaymentComponent implements OnInit {
   paymentMethodCtrl = new FormControl(PaymentMethod.COD);
   paymentMethodKeys = Object.keys(PaymentMethod) as Array<keyof typeof PaymentMethod>;
 
-  address:string = this.authService.userClaim?.address ?? '';
-  contactNumber:string = this.authService.userClaim?.contactNumber ?? '';
+  address: string = this.authService.userClaim?.address ?? '';
+  contactNumber: string = this.authService.userClaim?.contactNumber ?? '';
 
   ngOnInit(): void {
     this.buildPaymentForm();

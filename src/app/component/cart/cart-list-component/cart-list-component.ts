@@ -6,6 +6,7 @@ import { Cart, MyCart } from '../../../model/cart.model';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, Observable, tap } from 'rxjs';
 import { LucideAngularModule } from 'lucide-angular';
+import { log, error } from '@/utils/logger';
 
 @Component({
   selector: 'app-cart-list-component',

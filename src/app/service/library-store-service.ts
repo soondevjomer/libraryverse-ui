@@ -1,12 +1,13 @@
+import { warn } from '@/utils/logger';
 import { inject, Injectable, signal } from '@angular/core';
-import { LibraryService } from './library-service';
 import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 import { Library } from '../model/library.model';
 import { Page } from '../model/page.model';
 import { SearchFilter } from '../model/search.model';
+import { LibraryService } from './library-service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LibraryStoreService {
   // DEPENDENCIES
@@ -17,12 +18,10 @@ export class LibraryStoreService {
   private loading = signal(false);
   private error = signal<string | null>(null);
 
-  getLibraries(filter: SearchFilter, forceRefresh = false, role?: any)
-    : Observable<Page<Library>> {
+  getLibraries(filter: SearchFilter, forceRefresh = false, role?: any): Observable<Page<Library>> {
     const cached = this.cache$.value;
 
     if (cached && !forceRefresh && this.isSameFilter(filter)) {
-
       this.refreshInBackground(filter);
       return of(cached);
     }
@@ -34,21 +33,33 @@ export class LibraryStoreService {
     return this.fetchLibraries(filter, true);
   }
 
-  private fetchLibraries(filter: SearchFilter, replaceCache = true, role?:any): Observable<Page<Library>> {
+  private fetchLibraries(
+    filter: SearchFilter,
+    replaceCache = true,
+    role?: any
+  ): Observable<Page<Library>> {
     this.loading.set(true);
     this.error.set(null);
     this.lastFilter = filter;
 
     return this.libraryService.getLibraryByPage(filter).pipe(
-      tap((page)=>{
+      tap((page) => {
         if (replaceCache) this.cache$.next(page);
       }),
-      catchError(error=>{
+      catchError((error) => {
         this.error.set('Failed to load books');
         error('Fetch error: ', error);
-        return of(this.cache$.value ?? { content: [], totalPage: 0, pageNumber: 0, totalElement: 0, pageSize: 0 });
+        return of(
+          this.cache$.value ?? {
+            content: [],
+            totalPage: 0,
+            pageNumber: 0,
+            totalElement: 0,
+            pageSize: 0,
+          }
+        );
       }),
-      tap(()=>this.loading.set(false))
+      tap(() => this.loading.set(false))
     );
   }
 

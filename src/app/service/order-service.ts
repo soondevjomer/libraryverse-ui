@@ -1,12 +1,19 @@
+import { log } from '@/utils/logger';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
-import { OrderRequest, OrderResponse, OrderStat, OrderStatus, StoreOrder } from '../model/order.model';
 import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  OrderRequest,
+  OrderResponse,
+  OrderStat,
+  OrderStatus,
+  StoreOrder,
+} from '../model/order.model';
 import { Page } from '../model/page.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderService {
   // DEPENDENCIES
@@ -62,7 +69,6 @@ export class OrderService {
       .set('size', size ?? 10)
       .set('status', status ?? 'ALL');
 
-    return this.http.get<Page<StoreOrder>>(`${this.baseUrl}/orders`, {params});
+    return this.http.get<Page<StoreOrder>>(`${this.baseUrl}/orders`, { params });
   }
-
 }

@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { CheckRequest, Profile } from '../model/profile.model';
 import { Observable } from 'rxjs';
+import { log } from '@/utils/logger';
 
 @Injectable({
   providedIn: 'root'

@@ -13,10 +13,17 @@ import { LibraryStoreService } from '../../../service/library-store-service';
 import { AuthService } from '../../../service/auth-service';
 import { Role } from '../../../model/auth.model';
 import { LucideAngularModule } from 'lucide-angular';
+import { log } from '@/utils/logger';
 
 @Component({
   selector: 'app-library-list-component',
-  imports: [AsyncPipe, PaginationComponent, LibraryCardComponent, ReactiveFormsModule, LucideAngularModule],
+  imports: [
+    AsyncPipe,
+    PaginationComponent,
+    LibraryCardComponent,
+    ReactiveFormsModule,
+    LucideAngularModule,
+  ],
   templateUrl: './library-list-component.html',
   styles: ``,
 })
@@ -54,7 +61,9 @@ export class LibraryListComponent implements OnInit {
   defaultSortDirection: keyof typeof SortDirection = 'ASC';
 
   librarianEffect = effect(() => {
-    if (this.role() === Role.Librarian) { this.loadLibraries(this.createSearchFilter()); }
+    if (this.role() === Role.Librarian) {
+      this.loadLibraries(this.createSearchFilter());
+    }
   });
 
   ngOnInit(): void {
@@ -166,6 +175,6 @@ export class LibraryListComponent implements OnInit {
   }
 
   handleOnEdit(library: Library) {
-    if (library) this.router.navigate(['libraries/edit', library.id], {state: {library}});
+    if (library) this.router.navigate(['libraries/edit', library.id], { state: { library } });
   }
 }

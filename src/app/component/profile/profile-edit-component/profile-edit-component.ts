@@ -1,13 +1,13 @@
+import { log } from '@/utils/logger';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProfileService } from '../../../service/profile-service';
-import { Profile } from '../../../model/profile.model';
-import { JsonPipe } from '@angular/common';
-import { ToastService } from '../../../service/toast-service';
-import { debounceTime, distinctUntilChanged, finalize, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
+import { debounceTime, distinctUntilChanged, finalize, of, switchMap } from 'rxjs';
+import { Profile } from '../../../model/profile.model';
 import { AuthService } from '../../../service/auth-service';
+import { ProfileService } from '../../../service/profile-service';
+import { ToastService } from '../../../service/toast-service';
 
 @Component({
   selector: 'app-profile-edit-component',
@@ -168,7 +168,7 @@ export class ProfileEditComponent implements OnInit {
           if (updatedProfile.image instanceof File) {
             updatedProfile.image = '';
           }
-          
+
           const currentClaim = this.authService.userClaim;
           if (currentClaim) {
             this.authService['_userClaim'].set({

@@ -1,12 +1,12 @@
+import { log, error } from '@/utils/logger';
+import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PaymentMethod, PaymentRequest, PaymentResponse } from '../../../model/payment.model';
 import { OrderRequest, OrderResponse } from '../../../model/order.model';
+import { PaymentMethod, PaymentRequest, PaymentResponse } from '../../../model/payment.model';
 import { OrderService } from '../../../service/order-service';
 import { PaymentService } from '../../../service/payment-service';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { DecimalPipe } from '@angular/common';
-
 @Component({
   selector: 'app-payment-method-component',
   imports: [ReactiveFormsModule, DecimalPipe],
@@ -51,16 +51,14 @@ export class PaymentMethodComponent implements OnInit {
   }
 
   processPayment() {
-    
     log('processing payment...');
     let paymentRequest: PaymentRequest = {
       paymentMethod: this.paymentMethod,
       amount: this.totalAmount,
       accountNumber: '',
-      walletId: ''
+      walletId: '',
     };
 
-    
     if (this.paymentMethod === PaymentMethod.BANK_TRANSFER) {
       paymentRequest.accountNumber = this.accountNumberCtrl.value ?? '';
     } else if (this.paymentMethod === PaymentMethod.DIGITAL_WALLET) {

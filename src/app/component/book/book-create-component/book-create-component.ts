@@ -1,12 +1,12 @@
+import { error, log } from '@/utils/logger';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { BookFormComponent } from '../book-form-component/book-form-component';
+import { finalize } from 'rxjs';
 import { FormMode } from '../../../model/auth.model';
 import { Book, Inventory } from '../../../model/book.model';
-import { Router } from '@angular/router';
-import { BookService } from '../../../service/book-service';
-import { finalize } from 'rxjs';
 import { AuthService } from '../../../service/auth-service';
+import { BookService } from '../../../service/book-service';
 import { ToastService } from '../../../service/toast-service';
+import { BookFormComponent } from '../book-form-component/book-form-component';
 
 @Component({
   selector: 'app-book-create-component',
@@ -16,7 +16,6 @@ import { ToastService } from '../../../service/toast-service';
 })
 export class BookCreateComponent implements OnInit {
   // DEPENDENCIES
-  private router = inject(Router);
   private bookService = inject(BookService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
@@ -30,8 +29,8 @@ export class BookCreateComponent implements OnInit {
   libraryId = this.authService.userClaim?.libraryId;
 
   ngOnInit(): void {
-      const cachedBook = window.history.state['book'];
-      if (cachedBook) this.book = cachedBook;
+    const cachedBook = window.history.state['book'];
+    if (cachedBook) this.book = cachedBook;
   }
 
   // FUNCTIONS
@@ -53,7 +52,7 @@ export class BookCreateComponent implements OnInit {
     // New unified flow: backend handles both book + optional file
     this.bookService
       .createBookToLibrary(book, file instanceof File ? file : undefined)
-      .pipe(  
+      .pipe(
         finalize(() => {
           this.loading.set(false);
         })

@@ -1,11 +1,11 @@
+import { log, error } from '@/utils/logger';
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { environment } from '@env/environment';
 import { LucideAngularModule } from 'lucide-angular';
 import { Profile } from '../../../model/profile.model';
-import { environment } from '@env/environment';
 import { AuthService } from '../../../service/auth-service';
-import { Router } from '@angular/router';
-import { ProfileService } from '../../../service/profile-service'; // make sure this exists
-import { toSignal } from '@angular/core/rxjs-interop'; // helper to convert Observable -> Signal
+import { ProfileService } from '../../../service/profile-service';
 
 @Component({
   selector: 'app-profile-component',
@@ -61,6 +61,6 @@ export class ProfileComponent implements OnInit {
   }
 
   goEditProfile() {
-    this.router.navigate(['profile/edit'], {state:{profile:this.profile()}});
+    this.router.navigate(['profile/edit'], { state: { profile: this.profile() } });
   }
 }

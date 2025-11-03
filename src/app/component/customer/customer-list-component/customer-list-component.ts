@@ -7,11 +7,12 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 import { PaginationComponent } from '../../shared/pagination-component/pagination-component';
 import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
+import { log } from '@/utils/logger';
 
 @Component({
   selector: 'app-customer-list-component',
   imports: [AsyncPipe, PaginationComponent, LucideAngularModule],
-templateUrl: './customer-list-component.html',
+  templateUrl: './customer-list-component.html',
   styles: ``,
 })
 export class CustomerListComponent implements OnInit {
@@ -26,12 +27,12 @@ export class CustomerListComponent implements OnInit {
   }
 
   loadCustomers(pageNumber?: number) {
-    return this.customerService.getCustomerPage({page:pageNumber});
+    return this.customerService.getCustomerPage({ page: pageNumber });
   }
 
   onView(customer: Customer) {
     log('on view this customer: ', customer);
-    this.router.navigate(['customers', customer.id], { state: {customer} });
+    this.router.navigate(['customers', customer.id], { state: { customer } });
   }
 
   handlePageChange(pageNumber: number) {
