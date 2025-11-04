@@ -25,6 +25,7 @@ export class BookCreateComponent implements OnInit {
 
   // UI STATES
   loading = signal<boolean>(false);
+  loadingInfo = signal<string | null>(null);
 
   libraryId = this.authService.userClaim?.libraryId;
 
@@ -49,12 +50,14 @@ export class BookCreateComponent implements OnInit {
     const file = book.bookDetail.bookCover;
 
     this.loading.set(true);
+    this.loadingInfo.set('Creating book...');
     // New unified flow: backend handles both book + optional file
     this.bookService
       .createBookToLibrary(book, file instanceof File ? file : undefined)
       .pipe(
         finalize(() => {
           this.loading.set(false);
+          this.loadingInfo.set(null);
         })
       )
       .subscribe({

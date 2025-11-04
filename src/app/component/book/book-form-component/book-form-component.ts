@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, Signal, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -8,10 +8,11 @@ import {
 } from '@angular/forms';
 import { FormMode, Role } from '../../../model/auth.model';
 import { Book } from '../../../model/book.model';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-book-form-component',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LucideAngularModule],
   templateUrl: './book-form-component.html',
   styles: ``,
 })
@@ -20,6 +21,8 @@ export class BookFormComponent implements OnInit {
 
   @Input() book!: Book;
   @Input() role!: Role;
+  @Input() isSubmitting = signal(false);
+  @Input() submittingInfo = signal<string | null>(null);
   @Input() formMode: FormMode = FormMode.Add;
   @Output() create = new EventEmitter<Book>();
   @Output() edit = new EventEmitter<Book>();
@@ -33,9 +36,10 @@ export class BookFormComponent implements OnInit {
 
   FormMode = FormMode;
 
-  previewUrl: string | ArrayBuffer | null = null;
+  previewUrl = signal<string | ArrayBuffer | null>(null);
   fileError: string | null = null;
   submitted: boolean = false;
+  isPreviewLoading = signal(false);
 
   ngOnInit(): void {
     this.bookForm = this.buildForm();
@@ -186,30 +190,37 @@ export class BookFormComponent implements OnInit {
     const file = input.files[0];
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     const sizeMB = file.size / (1024 * 1024);
+    const minSizeMb = 0.01;
+    const maxSizeMb = 5;
 
-    if (sizeMB < 0.01 || sizeMB > 5) {
-      this.fileError = 'Book cover must be between 0.2 MB and 5 MB.';
-      this.previewUrl = null;
+    if (sizeMB < minSizeMb || sizeMB > maxSizeMb) {
+      this.fileError = `Book cover must be between ${minSizeMb} MB and ${maxSizeMb} MB.`;
+      this.previewUrl.set(null);
       this.bookForm.get('bookDetail.bookCover')?.reset();
       return;
     }
 
     if (!allowedTypes.includes(file.type)) {
       this.fileError = 'Only JPG, PNG, or WEBP formats are allowed.';
-      this.previewUrl = null;
+      this.previewUrl.set(null);
       this.bookForm.get('bookDetail.bookCover')?.reset();
       return;
     }
 
     this.fileError = null;
+    this.isPreviewLoading.set(true);
     this.bookForm.get('bookDetail.bookCover')?.setValue(file);
+
     const reader = new FileReader();
-    reader.onload = () => (this.previewUrl = reader.result);
+    reader.onload = () => {
+      this.previewUrl.set(reader.result);
+      this.isPreviewLoading.set(false);
+    };
     reader.readAsDataURL(file);
   }
 
   removeCover() {
-    this.previewUrl = null;
+    this.previewUrl.set(null);
     this.fileError = null;
     this.bookForm.get('bookDetail.bookCover')?.reset();
   }

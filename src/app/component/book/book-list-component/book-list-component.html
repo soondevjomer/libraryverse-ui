@@ -10,13 +10,13 @@
   class="flex flex-col md:flex-row md:items-center md:justify-between bg-white p-4 rounded-2xl shadow-md border border-gray-200 mb-6 gap-4"
 >
   <!-- LEFT SECTION -->
-  <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+  <div class="flex flex-col lg:flex-row items-center gap-3 w-full md:w-auto">
     <input
       type="text"
       placeholder="Search books..."
       formControlName="searchTitle"
       (keydown)="onSearchKeyDown($event)"
-      class="border border-gray-300 rounded-md px-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand2)]"
+      class="flex-1 border border-gray-300 rounded-md px-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand2)]"
     />
 
     <select
@@ -32,32 +32,34 @@
     <button
       type="button"
       (click)="toggleSortDirection()"
-      class="bg-[var(--color-brand2)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-brand3)] transition"
+      class="border border-[var(--color-brand2)] text-[var(--color-brand3)] hover:bg-[var(--color-brand2)] hover:text-white px-4 py-2 rounded-md transition"
     >
       {{ filterForm.get('sortDirection')?.value === 'ASC' ? '↓ Desc' : '↑ Asc' }}
     </button>
-  </div>
-
-  <!-- RIGHT SECTION (Librarian Only) -->
-  @if (isLoggedIn() && role() === Role.Librarian) {
-  <div class="flex items-center gap-3">
+    @if (isLoggedIn() && role() === Role.Librarian) {
     <button
       type="button"
       (click)="toggleBookViewMode()"
-      class="border border-[var(--color-brand2)] text-[var(--color-brand2)] hover:bg-[var(--color-brand2)] hover:text-white px-4 py-2 rounded-md transition"
+      class="border border-[var(--color-brand2)] text-[var(--color-brand3)] hover:bg-[var(--color-brand2)] hover:text-white px-4 py-2 rounded-md transition"
     >
-      {{ bookViewMode() === 'allBooks' ? 'Switch to My Books' : 'Switch to All Books' }}
+      <div class="flex items-center space-x-2">
+        <lucide-icon name="arrow-down-up" class="w-5 h-5"> </lucide-icon>
+        <span>{{ bookViewMode() === 'allBooks' ? 'My Books' : 'All Books' }}</span>
+      </div>
     </button>
 
     <button
       type="button"
       (click)="toggleViewMode()"
-      class="border border-[var(--color-brand2)] text-[var(--color-brand2)] hover:bg-[var(--color-brand2)] hover:text-white px-4 py-2 rounded-md transition"
+      class="border border-[var(--color-brand2)] text-[var(--color-brand3)] hover:bg-[var(--color-brand2)] hover:text-white px-4 py-2 rounded-md transition"
     >
-      {{ viewMode() === 'card' ? 'Switch to Table View' : 'Switch to Card View' }}
+      <div class="flex items-center space-x-2">
+        <lucide-icon name="arrow-down-up" class="w-5 h-5"> </lucide-icon>
+        <span>{{ viewMode() === 'card' ? 'Table' : 'Card' }}</span>
+      </div>
     </button>
+    }
   </div>
-  }
 </form>
 
 <!-- MAIN BOOK LIST DISPLAY -->

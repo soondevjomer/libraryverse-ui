@@ -4,7 +4,10 @@
   <div class="flex items-center space-x-3">
     <!-- Burger icon (only mobile) -->
     <button (click)="toggleMobileMenu()" class="md:hidden focus:outline-none">
-      <lucide-icon name="menu" class="w-5 h-5"></lucide-icon>
+      <lucide-icon
+        [name]="isMobileMenuOpen() ? 'x' : 'menu'"
+        class="w-5 h-5 hover:text-brand3"
+      ></lucide-icon>
     </button>
 
     <!-- Logo / App name -->
@@ -45,16 +48,9 @@
 
         <!-- Dropdown Menu -->
         <div
-          [ngClass]="isDropDownOpen ? 'block' : 'hidden'"
+          [ngClass]="isDropDownOpen() ? 'block' : 'hidden'"
           class="absolute right-0 mt-2 w-48 bg-[var(--color-brand4)] border border-[var(--color-brand2)] rounded-xl shadow-lg overflow-hidden z-50"
         >
-          <!-- Header -->
-          <!-- <div
-            class="px-4 py-2 text-sm font-semibold text-[var(--color-brand4)] bg-[var(--color-brand2)] bg-opacity-20 border-b border-[var(--color-brand3)]"
-          >
-            {{ name }}
-          </div> -->
-
           <!-- Menu Items -->
           <button
             (click)="gotoProfile()"
@@ -92,18 +88,17 @@
 </div>
 
 <!-- Mobile navigation (below topbar) -->
-@if (isMobileMenuOpen) {
+@if (isMobileMenuOpen()) {
 <nav class="md:hidden bg-brand1 text-white flex flex-col p-3 space-y-2 animate-fade-in-down">
   @for (nav of filteredNavItems(); track nav.path) {
   <a
-    routerLink="{{ nav.path }}"
-    routerLinkActive="bg-[var(--color-brand3)] text-[var(--color-brand5)]"
+    [routerLink]="nav.path"
+    routerLinkActive="active-link text-brand3 font-semibold ml-4 scale-110 transition-transform duration-300 ease-in-out"
+    [routerLinkActiveOptions]="{ exact: true }"
+    #rla="routerLinkActive"
     class="group flex items-center gap-2 px-4 py-2 rounded hover:bg-[var(--color-brand2)] transition duration-200"
   >
-    <lucide-icon
-      [name]="nav.icon"
-      class="w-5 h-5 text-[var(--color-brand2)] group-hover:text-[var(--color-brand1)] group-[.router-link-active]:text-[var(--color-brand5)]"
-    ></lucide-icon>
+    <lucide-icon [name]="nav.icon" [class]="getLucideCss(rla.isActive)"></lucide-icon>
     <span>{{ nav.name }}</span>
   </a>
   }
@@ -116,14 +111,13 @@
   <nav class="hidden md:flex bg-brand1 text-white w-64 p-4 flex-col space-y-1">
     @for (nav of filteredNavItems(); track nav.path) {
     <a
-      routerLink="{{ nav.path }}"
-      routerLinkActive="bg-[var(--color-brand3)] text-[var(--color-brand5)]"
+      [routerLink]="nav.path"
+      routerLinkActive="active-link text-brand3 font-semibold ml-4 scale-110 transition-transform duration-300 ease-in-out"
+      [routerLinkActiveOptions]="{ exact: true }"
+      #rla="routerLinkActive"
       class="group flex items-center gap-3 px-4 py-2 rounded hover:bg-[var(--color-brand2)] transition duration-200"
     >
-      <lucide-icon
-        [name]="nav.icon"
-        class="w-5 h-5 text-[var(--color-brand2)] group-hover:text-[var(--color-brand1)] group-[.router-link-active]:text-[var(--color-brand5)]"
-      ></lucide-icon>
+      <lucide-icon [name]="nav.icon" [class]="getLucideCss(rla.isActive)"></lucide-icon>
       <span>{{ nav.name }}</span>
     </a>
     }

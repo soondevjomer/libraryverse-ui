@@ -5,13 +5,11 @@
   Create Book
 </h2>
 <div>
-  @if (loading()) {
-  <p class="text-gray-600">Creating book ...</p>
-  } @else {
   <app-book-form-component
     [formMode]="createMode"
     [book]="book"
+    [isSubmitting]="loading"
+    [submittingInfo]="loadingInfo"
     (create)="handleCreate($event)"
   ></app-book-form-component>
-  }
 </div>

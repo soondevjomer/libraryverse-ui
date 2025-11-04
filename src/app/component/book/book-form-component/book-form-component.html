@@ -15,7 +15,7 @@
       [class.border-red-500]="submitted && bookForm.get('isbn')?.invalid"
     />
     @if (submitted && bookForm.get('isbn')?.hasError('required')) {
-      <p class="text-red-500 text-sm mt-1">ISBN is required.</p>
+    <p class="text-red-500 text-sm mt-1">ISBN is required.</p>
     }
   </div>
 
@@ -32,7 +32,7 @@
         [class.border-red-500]="submitted && bookForm.get('bookDetail.title')?.invalid"
       />
       @if (submitted && bookForm.get('bookDetail.title')?.hasError('required')) {
-        <p class="text-red-500 text-sm mt-1">Title is required.</p>
+      <p class="text-red-500 text-sm mt-1">Title is required.</p>
       }
     </div>
 
@@ -70,17 +70,19 @@
       />
       <div class="flex flex-wrap gap-2">
         @for (genre of genres; track $index) {
-          <div class="flex items-center bg-[var(--color-brand2)] text-[var(--color-brand4)] rounded px-3 py-1 text-sm">
-            <span>{{ genre }}</span>
-            <button
-              (click)="removeGenre(genre)"
-              type="button"
-              class="ml-2 text-[var(--color-brand3)] hover:text-red-500 font-bold"
-              aria-label="Remove genre"
-            >
-              &times;
-            </button>
-          </div>
+        <div
+          class="flex items-center bg-[var(--color-brand2)] text-[var(--color-brand4)] rounded px-3 py-1 text-sm"
+        >
+          <span>{{ genre }}</span>
+          <button
+            (click)="removeGenre(genre)"
+            type="button"
+            class="ml-2 text-[var(--color-brand3)] hover:text-red-500 font-bold"
+            aria-label="Remove genre"
+          >
+            &times;
+          </button>
+        </div>
         }
       </div>
     </div>
@@ -99,17 +101,19 @@
       />
       <div class="flex flex-wrap gap-2">
         @for (author of authors; track $index) {
-          <div class="flex items-center bg-[var(--color-brand2)] text-[var(--color-brand4)] rounded px-3 py-1 text-sm">
-            <span>{{ author }}</span>
-            <button
-              (click)="removeAuthor(author)"
-              type="button"
-              class="ml-2 text-[var(--color-brand3)] hover:text-red-500 font-bold"
-              aria-label="Remove author"
-            >
-              &times;
-            </button>
-          </div>
+        <div
+          class="flex items-center bg-[var(--color-brand2)] text-[var(--color-brand4)] rounded px-3 py-1 text-sm"
+        >
+          <span>{{ author }}</span>
+          <button
+            (click)="removeAuthor(author)"
+            type="button"
+            class="ml-2 text-[var(--color-brand3)] hover:text-red-500 font-bold"
+            aria-label="Remove author"
+          >
+            &times;
+          </button>
+        </div>
         }
       </div>
     </div>
@@ -146,10 +150,9 @@
         class="w-full border border-[var(--color-brand2)] rounded px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand3)]"
       />
       @if (bookForm.get('bookDetail.price')?.errors?.['min']) {
-        <p class="text-red-500 text-sm mt-1">Price cannot be negative.</p>
-      }
-      @if (bookForm.get('bookDetail.price')?.errors?.['pattern']) {
-        <p class="text-red-500 text-sm mt-1">Price must be a valid number (max 2 decimals).</p>
+      <p class="text-red-500 text-sm mt-1">Price cannot be negative.</p>
+      } @if (bookForm.get('bookDetail.price')?.errors?.['pattern']) {
+      <p class="text-red-500 text-sm mt-1">Price must be a valid number (max 2 decimals).</p>
       }
     </div>
 
@@ -163,13 +166,15 @@
         class="w-full border border-[var(--color-brand2)] rounded px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand3)]"
       />
       @if (bookForm.get('bookDetail.quantity')?.errors?.['min']) {
-        <p class="text-red-500 text-sm mt-1">Quantity cannot be negative.</p>
+      <p class="text-red-500 text-sm mt-1">Quantity cannot be negative.</p>
       }
     </div>
 
     <!-- Book Cover -->
     <div>
-      <label class="block font-semibold mb-1 text-[var(--color-brand1)]">Book Cover (optional)</label>
+      <label class="block font-semibold mb-1 text-[var(--color-brand1)]"
+        >Book Cover (optional)</label
+      >
       <input
         type="file"
         accept="image/*"
@@ -178,60 +183,70 @@
       />
 
       @if (fileError) {
-        <p class="text-red-500 text-sm mt-2">{{ fileError }}</p>
-      }
-
-      @if (previewUrl) {
-        <div class="mt-3 flex items-center gap-3">
-          <img
-            [src]="previewUrl"
-            alt="Book Cover Preview"
-            class="w-28 h-36 object-cover border border-[var(--color-brand2)] rounded-lg shadow-sm"
-          />
-          <div class="flex flex-col">
-            <button
-              type="button"
-              (click)="removeCover()"
-              class="text-sm text-red-600 hover:text-red-800 underline"
-            >
-              Remove
-            </button>
-            <small class="text-[var(--color-brand5)] mt-1">Preview of selected cover</small>
-          </div>
+      <p class="text-red-500 text-sm mt-2">{{ fileError }}</p>
+      } @if (previewUrl()) {
+      <div class="mt-3 flex items-center gap-3">
+        @if (!isPreviewLoading()) {
+        <img
+          [src]="previewUrl()"
+          alt="Book Cover Preview"
+          class="w-28 h-36 object-cover border border-[var(--color-brand2)] rounded-lg shadow-sm"
+        />
+        <div class="flex flex-col">
+          <button
+            type="button"
+            (click)="removeCover()"
+            class="text-sm text-red-600 hover:text-red-800 underline"
+          >
+            Remove
+          </button>
+          <small class="text-[var(--color-brand5)] mt-1">Preview of selected cover</small>
         </div>
+        } @else {
+        <p class="text-sm text-[var(--color-brand1)] italic mt-2">Loading preview...</p>
+        }
+      </div>
       }
     </div>
   </div>
 
   <!-- SUBMIT -->
-  <div class="pt-4">
-    @if (formMode == FormMode.Add) {
-      <button
-        (click)="onCreate()"
-        type="button"
-        class="px-6 py-2 rounded bg-[var(--color-brand2)] text-[var(--color-brand4)] hover:bg-[var(--color-brand3)] transition"
-      >
-        Create
-      </button>
+  <div class="pt-4 flex justify-start">
+    @if (!isSubmitting()) { @if (formMode == FormMode.Add) {
+    <button
+      (click)="onCreate()"
+      type="button"
+      class="px-6 py-2 rounded bg-[var(--color-brand2)] text-[var(--color-brand4)] hover:bg-[var(--color-brand3)] transition"
+    >
+      Create
+    </button>
     } @else if (formMode == FormMode.Edit) {
-      <button
-        (click)="onSave()"
-        type="button"
-        class="px-6 py-2 rounded bg-[var(--color-brand2)] text-[var(--color-brand4)] hover:bg-[var(--color-brand3)] transition"
-      >
-        Save
-      </button>
+    <button
+      (click)="onSave()"
+      type="button"
+      class="px-6 py-2 rounded bg-[var(--color-brand2)] text-[var(--color-brand4)] hover:bg-[var(--color-brand3)] transition"
+    >
+      Save
+    </button>
     } @else if (formMode == FormMode.Copy) {
-      <button
-        (click)="onCopy()"
-        type="button"
-        class="px-6 py-2 rounded bg-[var(--color-brand2)] text-[var(--color-brand4)] hover:bg-[var(--color-brand3)] transition"
-      >
-        Copy
-      </button>
+    <button
+      (click)="onCopy()"
+      type="button"
+      class="px-6 py-2 rounded bg-[var(--color-brand2)] text-[var(--color-brand4)] hover:bg-[var(--color-brand3)] transition"
+    >
+      Copy
+    </button>
+    } } @else {
+    <div
+      class="px-6 py-2 bg-[var(--color-brand2)] text-white font-semibold rounded-lg flex justify-center items-center gap-2 animate-pulse"
+    >
+      <lucide-icon name="loader" class="w-5 h-5 text-[var(--color-brand4)] animate-spin">
+      </lucide-icon>
+      <span>{{ submittingInfo()!=null ? submittingInfo() : 'Loading...' }}</span>
+    </div>
     }
   </div>
 </form>
 } @else {
-  <p class="text-gray-600 italic">Loading...</p>
+<p class="text-gray-600 italic">Loading...</p>
 }

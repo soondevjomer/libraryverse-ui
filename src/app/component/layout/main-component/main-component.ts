@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../service/auth-service';
 import { NgClass } from '@angular/common';
 import { Role, UserClaim } from '../../../model/auth.model';
@@ -10,7 +10,14 @@ import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-main-component',
-  imports: [RouterOutlet, RouterLink, NgClass, LucideAngularModule, ToastComponent],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    NgClass,
+    LucideAngularModule,
+    ToastComponent,
+    RouterLinkActive,
+  ],
   templateUrl: './main-component.html',
   styles: ``,
 })
@@ -19,8 +26,8 @@ export class MainComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  isMobileMenuOpen: boolean = false;
-  isDropDownOpen = false;
+  isMobileMenuOpen = signal<boolean>(false);
+  isDropDownOpen = signal<boolean>(false);
 
   role = this.authService._role;
   isLoggedIn = this.authService.isLoggedIn;
@@ -55,34 +62,39 @@ export class MainComponent {
   }
 
   toggleMobileMenu() {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    this.isMobileMenuOpen.set(!this.isMobileMenuOpen());
   }
 
   toggleDropDown() {
-    this.isDropDownOpen = !this.isDropDownOpen;
+    this.isDropDownOpen.set(!this.isDropDownOpen());
   }
 
   handleLogout() {
-    this.isDropDownOpen = false;
+    this.isDropDownOpen.set(false);
     this.authService.logout();
   }
 
   gotoLogin() {
-    this.toggleDropDown();
+    this.isDropDownOpen.set(false);
     this.router.navigate(['login']);
   }
 
   gotoProfile() {
-    this.toggleDropDown();
+    this.isDropDownOpen.set(false);
     this.router.navigate(['profile']);
   }
 
   gotoDashboardOrBooks() {
-    if (this.role==Role.Librarian.toString) {
+    if (this.role == Role.Librarian.toString) {
       this.router.navigate(['dashboard']);
     } else {
       this.router.navigate(['books']);
     }
-    
+  }
+  
+  getLucideCss(isActive:boolean) {
+    const baseCss = "w-5 h-5 group-hover:text-brand1"
+    return isActive ? baseCss
+    : baseCss + " text-brand6"
   }
 }
