@@ -13,6 +13,8 @@ export interface Library {
     description?: string,
     ownerName: string
     libraryCover: string | File,
+    libraryThumbnailCover: string | File,
+    popularityScore: number,
 }
 
 export interface LibraryRequest {
@@ -21,4 +23,8 @@ export interface LibraryRequest {
     contactNumber?:string,
     description?:string,
     libraryCover?: string | File
+}
+
+export interface LibraryInfo {
+    library: Library;
 }

@@ -45,6 +45,7 @@ export class LibraryDetailComponent implements OnInit {
   // Auth and env info
   role = this.authService._role();
   libraryId = Number(this.authService.userClaim?.libraryId);
+  isLoggedIn = this.authService.isLoggedIn;
   baseUrl = environment.apiBaseUrl;
   defaultLibraryCover = environment.defaultLibraryCover;
 
@@ -114,7 +115,7 @@ export class LibraryDetailComponent implements OnInit {
   }
 
   handleOnEdit(library: Library) {
-    this.router.navigate(['libraries/edit', library.id], { state: { library } });
+    this.router.navigate(['libraries/edit', library.id], { state: { library:library } });
   }
 
   handleOnBookEdit(book: Book) {
@@ -135,11 +136,6 @@ export class LibraryDetailComponent implements OnInit {
     if (!this.authService.isLoggedIn()) {
       this.toastService.info('Please log in first');
       this.router.navigate(['login']);
-      return;
-    }
-
-    if (book.inventory?.availableStock == null || book.inventory.availableStock == 0) {
-      this.toastService.info('No available stock');
       return;
     }
 

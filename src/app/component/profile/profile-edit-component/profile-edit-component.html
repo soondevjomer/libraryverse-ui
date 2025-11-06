@@ -1,11 +1,8 @@
 <div
-  class="max-w-3xl mx-auto p-6 bg-[var(--color-brand4)] rounded-2xl shadow-md border border-gray-200 space-y-6"
+  class="max-w-3xl mx-auto p-6 bg-[var(--color-brand4)] rounded-2xl shadow-md border border-[var(--color-brand3)]/30 space-y-6"
 >
   <!-- Header -->
-  <div
-    class="flex items-center gap-4 mb-4 border-b-4 border-[var(--color-brand2)] pb-3"
-  >
-    <!-- Back Button -->
+  <div class="flex items-center gap-4 mb-4 border-b-4 border-[var(--color-brand2)] pb-3">
     <button
       (click)="backToProfile()"
       class="bg-[var(--color-brand2)] hover:bg-[var(--color-brand3)] transition-colors duration-200 rounded-full w-10 h-10 flex items-center justify-center shadow-md"
@@ -14,162 +11,18 @@
       <lucide-icon name="chevron-left" class="w-6 h-6 text-white"></lucide-icon>
     </button>
 
-    <!-- Title -->
-    <h2
-      class="text-2xl md:text-3xl font-bold text-[var(--color-brand1)] uppercase tracking-wide"
-    >
+    <h2 class="text-2xl md:text-3xl font-bold text-[var(--color-brand1)] uppercase tracking-wide">
       Edit Profile
     </h2>
   </div>
 
-  <!-- Form -->
-  <form [formGroup]="profileForm" class="space-y-6">
-    <!-- Image Upload -->
-    <div class="flex flex-col md:flex-row items-center gap-6">
-      <!-- Current Avatar -->
-      <div class="relative flex-shrink-0">
-        @if (!loading()) { @if (previewUrl) {
-        <img
-          [src]="previewUrl"
-          alt="Preview"
-          class="w-40 h-40 rounded-full object-cover border-4 border-[var(--color-brand2)] shadow-md bg-[var(--color-brand6)] transition-all duration-300"
-        />
-        } @else {
-        <div
-          class="w-40 h-40 rounded-full border-4 border-[var(--color-brand2)] shadow-md flex items-center justify-center bg-[var(--color-brand2)] text-white text-5xl font-bold transition-all duration-300"
-        >
-          {{ profileForm.get('name')?.value?.charAt(0)?.toUpperCase() || '?' }}
-        </div>
-        } } @else {
-        <div
-          class="w-40 h-40 rounded-full border-4 border-[var(--color-brand3)] bg-[var(--color-brand6)] flex items-center justify-center shadow-md"
-        >
-          <lucide-icon
-            name="loader"
-            class="w-8 h-8 text-[var(--color-brand3)] animate-spin"
-          ></lucide-icon>
-        </div>
-        }
-
-        <!-- Upload Button -->
-        <label
-          class="absolute bottom-2 right-2 bg-[var(--color-brand1)] hover:bg-[var(--color-brand3)] text-white rounded-full p-2 shadow-md transition-colors cursor-pointer"
-          title="Change Profile Picture"
-        >
-          <lucide-icon name="camera" class="w-5 h-5"></lucide-icon>
-          <input type="file" hidden (change)="handleFileChange($event)" />
-        </label>
-      </div>
-
-      <!-- Error -->
-      @if (fileError) {
-      <p class="text-red-500 text-sm">{{ fileError }}</p>
-      }
-    </div>
-
-    <!-- Name -->
-    <div>
-      <label class="block text-sm font-medium text-[var(--color-brand1)] mb-1">
-        Full Name <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="name"
-        placeholder="Enter full name"
-        class="w-full p-3 rounded-md border border-[var(--color-brand2)] placeholder:text-gray-800 focus:ring-2 focus:ring-[var(--color-brand3)] outline-none"
-      />
-      @if (profileForm.get('name')?.touched && profileForm.get('name')?.invalid) {
-      <p class="text-sm text-red-500 mt-1">Name is required</p>
-      }
-    </div>
-
-    <!-- Username -->
-    <div>
-      <label class="block text-sm font-medium text-[var(--color-brand1)] mb-1">
-        Username <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="username"
-        placeholder="Enter username"
-        class="w-full p-3 rounded-md border border-[var(--color-brand2)] placeholder:text-gray-800 focus:ring-2 focus:ring-[var(--color-brand3)] outline-none"
-      />
-      @if (profileForm.get('username')?.touched && profileForm.get('username')?.invalid) {
-      <p class="text-sm text-red-500 mt-1">Username is required</p>
-      } @if (usernameTaken()) {
-      <p class="text-sm text-red-500 mt-1">Username already taken</p>
-      }
-    </div>
-
-    <!-- Email -->
-    <div>
-      <label class="block text-sm font-medium text-[var(--color-brand1)] mb-1">
-        Email <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="email"
-        formControlName="email"
-        placeholder="Enter email"
-        class="w-full p-3 rounded-md border border-[var(--color-brand2)] placeholder:text-gray-800 focus:ring-2 focus:ring-[var(--color-brand3)] outline-none"
-      />
-      @if (profileForm.get('email')?.touched && profileForm.get('email')?.invalid) {
-      <p class="text-sm text-red-500 mt-1">Please enter a valid email</p>
-      } @if (emailTaken()) {
-      <p class="text-sm text-red-500 mt-1">Email already taken</p>
-      }
-    </div>
-
-    <!-- Address -->
-    <div>
-      <label class="block text-sm font-medium text-[var(--color-brand1)] mb-1">
-        Address <span class="text-red-500">*</span>
-      </label>
-      <textarea
-        formControlName="address"
-        placeholder="Enter address"
-        rows="2"
-        class="w-full p-3 rounded-md border border-[var(--color-brand2)] placeholder:text-gray-800 focus:ring-2 focus:ring-[var(--color-brand3)] outline-none"
-      ></textarea>
-      @if (profileForm.get('address')?.touched && profileForm.get('address')?.invalid) {
-      <p class="text-sm text-red-500 mt-1">Address is required</p>
-      }
-    </div>
-
-    <!-- Contact Number -->
-    <div>
-      <label class="block text-sm font-medium text-[var(--color-brand1)] mb-1">
-        Contact Number <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="contactNumber"
-        placeholder="Enter contact number"
-        class="w-full p-3 rounded-md border border-[var(--color-brand2)] placeholder:text-gray-800 focus:ring-2 focus:ring-[var(--color-brand3)] outline-none"
-      />
-      @if (profileForm.get('contactNumber')?.touched && profileForm.get('contactNumber')?.invalid) {
-      <p class="text-sm text-red-500 mt-1">Contact number is required</p>
-      }
-    </div>
-
-    <!-- Save Button -->
-    <div class="flex justify-end pt-4">
-      @if (!loading()) {
-      <button
-        (click)="handleSave()"
-        class="flex items-center gap-2 bg-[var(--color-brand2)] text-white px-6 py-2 rounded-md hover:bg-[var(--color-brand3)] transition-colors"
-      >
-        <lucide-icon name="save" class="w-4 h-4"></lucide-icon>
-        Save
-      </button>
-      } @else {
-      <button
-        disabled
-        class="flex items-center gap-2 bg-[var(--color-brand5)] text-white px-6 py-2 rounded-md opacity-70 cursor-not-allowed"
-      >
-        <lucide-icon name="loader" class="w-4 h-4 animate-spin"></lucide-icon>
-        Saving...
-      </button>
-      }
-    </div>
-  </form>
+  <app-profile-form-component
+  [profile]="profile"
+  [formMode]="editMode"
+  [isSubmitting]="loading"
+  [submittingInfo]="loadingInfo"
+  (emailChanged)="handleEmailChanged($event)"
+  (usernameChanged)="handleUsernameChanged($event)"
+  (create)="handleSave($event)"
+  ></app-profile-form-component>
 </div>

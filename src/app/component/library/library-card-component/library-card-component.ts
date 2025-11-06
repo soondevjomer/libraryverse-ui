@@ -14,6 +14,7 @@ import { log } from '@/utils/logger';
 export class LibraryCardComponent {
   @Input() library!: Library;
   @Input() libraryId: number = 0;
+  @Input() isLoggedIn: boolean = false;
   @Input() role!: Role;
   @Output() view = new EventEmitter<Library>();
   @Output() edit = new EventEmitter<Library>();

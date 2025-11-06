@@ -63,8 +63,8 @@ export class CartListComponent implements OnInit {
             carts: this.fb.array(
               lib.carts?.map((cart) =>
                 this.fb.group({
-                  selected: [false],
-                  quantity: [cart.quantity || 0],
+                  selected: [{ value: false || false, disabled: cart.maxQuantity === 0 }],
+                  quantity: [{ value: cart.quantity || 0, disabled: cart.maxQuantity === 0 }],
                   price: [cart.price],
                   maxQuantity: [cart.maxQuantity ?? 0],
                 })
@@ -91,7 +91,8 @@ export class CartListComponent implements OnInit {
   increaseQuantity(libIndex: number, itemIndex: number) {
     const group = this.getCartGroup(libIndex, itemIndex);
     const current = group.get('quantity')?.value || 1;
-    const max = group.get('maxQuantity')?.value || 10;
+    const max = group.get('maxQuantity')?.value || 0;
+    if (max==0) return;
     if (current < max) {
       group.get('quantity')?.setValue(current + 1);
     }
@@ -145,7 +146,7 @@ export class CartListComponent implements OnInit {
         const qty = ctrl.get('quantity')?.value;
         const cart = this.myCarts[i]?.carts?.[j];
 
-        if (sel && cart) {
+        if (sel && cart && qty > 0 && cart.maxQuantity > 0) {
           selected.push({ ...cart, quantity: qty });
         }
       });
@@ -157,10 +158,8 @@ export class CartListComponent implements OnInit {
     this.router.navigate(['/payment'], { state: { selected } });
   }
 
-  /** 🗑 Remove Cart Item (frontend + backend call) */
+  /** Remove Cart Item (frontend + backend call) */
   removeCartItem(libIndex: number, cartIndex: number, cartId: number) {
-    if (!confirm('Remove this item from your cart?')) return;
-
     this.cartService.removeCart(cartId).subscribe({
       next: () => {
         const librariesArray = this.libraries as FormArray;

@@ -92,7 +92,7 @@
 
       <!-- STOCK INFO -->
       <div class="text-xs text-gray-700 leading-snug mt-1">
-        @if (book.inventory) { @if (role() === Role.Librarian) {
+        @if (book.inventory) { @if (isLoggedIn() && role() === Role.Librarian) {
         <div class="grid grid-cols-[auto_1fr] items-start gap-x-2">
           <lucide-icon name="package" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
           <span [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''">
@@ -130,7 +130,7 @@
           View
         </button>
 
-        @if (role() === Role.Librarian) { @if (book.libraryId === libraryId) {
+        @if (isLoggedIn() && role() == Role.Librarian) { @if (book.libraryId === libraryId) {
         <button
           (click)="handleOnEdit(book)"
           class="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
@@ -235,7 +235,7 @@
               View
             </button>
 
-            @if (role() == Role.Librarian) { @if (book.libraryId == libraryId) {
+            @if (isLoggedIn() && role() == Role.Librarian) { @if (book.libraryId == libraryId) {
             <button
               (click)="handleOnEdit(book)"
               class="flex items-center justify-center gap-1 w-24 px-3 py-1.5 bg-[var(--color-brand1)] text-[var(--color-brand4)] text-sm rounded-md hover:bg-[var(--color-brand2)] hover:text-white transition-colors"
@@ -269,6 +269,7 @@
     [book]="book"
     [role]="role()"
     [libraryId]="libraryId"
+    [isLoggedIn]="isLoggedIn()"
     (view)="handleOnView($event)"
     (addToCart)="handleOnAddToCart($event)"
     (buy)="handleOnBuy($event)"

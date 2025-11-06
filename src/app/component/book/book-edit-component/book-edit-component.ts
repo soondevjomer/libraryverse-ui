@@ -35,6 +35,7 @@ export class BookEditComponent implements OnInit {
 
   // UI STATES
   loading = signal<boolean>(false);
+  loadingInfo = signal<string | null>(null);
   message = signal<string | null>(null);
   messageType = signal<'success' | 'error' | 'info'>('info');
 
@@ -49,21 +50,16 @@ export class BookEditComponent implements OnInit {
     log('book: ', this.book);
   }
 
-  handleBookEdit(book: Book) {
+  handleBookEdit({ book, file }: { book: Book, file?: File }) {
     if (!book) return;
 
     log('UPDATING BOOK WITH THIS:', book);
+
     this.loading.set(true);
+    this.loadingInfo.set('Updating book...');
 
-    const file = book.bookDetail.bookCover;
-
-    if (typeof book.bookDetail.bookCover !== 'string') {
-      book.bookDetail.bookCover = '';
-    }
-
-    // Unified call — backend handles optional file
     this.bookService
-      .updateBook(book.id, book, file instanceof File ? file : undefined)
+      .updateBook(book.id, book, file)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (updatedBook) => {

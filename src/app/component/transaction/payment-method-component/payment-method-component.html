@@ -21,13 +21,24 @@
           placeholder="Enter Account Number"
           class="w-full border border-[var(--color-brand2)] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand3)]"
         />
-        <button
+        @if (!loading()) {
+          <button
           type="button"
         (click)="processPayment()"
           class="w-full bg-[var(--color-brand2)] text-white font-semibold py-2 rounded-lg hover:bg-[var(--color-brand3)] transition-colors"
         >
           Pay via Bank
         </button>
+        } @else {
+          <div
+          class="w-full py-3 bg-[var(--color-brand2)] text-white font-semibold rounded-lg flex justify-center items-center gap-2 animate-pulse"
+        >
+          <lucide-icon name="loader" class="w-5 h-5 text-[var(--color-brand4)] animate-spin">
+          </lucide-icon>
+          <span class="italic">Paying via bank...</span>
+        </div>
+        }
+        
       </div>
     }
     @else if (paymentMethod === PaymentMethod.DIGITAL_WALLET) {
@@ -38,6 +49,7 @@
           placeholder="Enter Wallet ID"
           class="w-full border border-[var(--color-brand2)] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand3)]"
         />
+        @if (!loading()) {
         <button
           type="button"
           (click)="processPayment()"
@@ -45,6 +57,15 @@
         >
           Pay via Wallet
         </button>
+      } @else {
+        <div
+          class="w-full py-3 bg-[var(--color-brand2)] text-white font-semibold rounded-lg flex justify-center items-center gap-2 animate-pulse"
+        >
+          <lucide-icon name="loader" class="w-5 h-5 text-[var(--color-brand4)] animate-spin">
+          </lucide-icon>
+          <span class="italic">Paying via wallet...</span>
+        </div>
+      }
       </div>
     }
     @else {

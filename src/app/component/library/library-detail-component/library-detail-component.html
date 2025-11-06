@@ -13,61 +13,68 @@
 
 @if (library$ | async; as library) { @if (library && library.id) {
 <div class="max-w-6xl mx-auto px-4 py-8 space-y-10">
-  <!-- Library Card -->
-  <div
-    class="flex flex-col md:flex-row bg-[var(--color-brand4)] rounded-3xl shadow-lg border border-[var(--color-brand3)]/30 overflow-hidden"
-  >
-    <!-- Cover -->
-    <div class="w-full md:w-1/3 bg-[var(--color-brand6)] flex items-center justify-center p-6">
+  <!-- Library Header Card -->
+  <div class="bg-[var(--color-brand4)] rounded-3xl shadow-lg border border-[var(--color-brand3)]/30 overflow-hidden">
+
+    <!-- Cover Image -->
+    <div class="relative w-full h-56 md:h-72 bg-[var(--color-brand6)]">
       <img
         [src]="library.libraryCover ? baseUrl + library.libraryCover : defaultLibraryCover"
         alt="{{ library.name }}"
-        class="max-h-[400px] object-contain rounded-xl shadow-md"
+        class="w-full h-full object-cover"
       />
     </div>
 
-    <!-- Info -->
-    <div class="flex flex-col justify-between flex-1 p-8 space-y-4">
-      <div class="space-y-3">
+    <!-- Library Info -->
+    <div class="p-6 md:p-10 space-y-6">
+      <!-- Title + Owner -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-brand1)]">
           {{ library.name }}
         </h1>
 
-        <p class="text-gray-700">
-          <span class="font-semibold text-[var(--color-brand1)]">Owner:</span>
-          {{ library.ownerName }}
+        <p class="text-sm md:text-base text-gray-700">
+          <lucide-icon name="user" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
+          <span class="font-medium">Owner:</span>
+          {{ library.ownerName || 'Unknown' }}
         </p>
+      </div>
 
-        <p class="text-gray-700">
+      <!-- Contact + Address -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+        <p>
+          <lucide-icon name="phone" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
           <span class="font-semibold text-[var(--color-brand1)]">Contact:</span>
           {{ library.contactNumber || 'Nothing provided' }}
         </p>
 
-        <p class="text-gray-700">
+        <p>
+          <lucide-icon name="map-pin" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
           <span class="font-semibold text-[var(--color-brand1)]">Address:</span>
           {{ library.address || 'Nothing provided' }}
         </p>
+      </div>
 
-        <div>
-          <h3 class="text-lg font-semibold text-[var(--color-brand1)] mb-1">About</h3>
-          <p class="text-gray-700 leading-relaxed whitespace-pre-line max-h-32 overflow-y-auto">
-            {{ library.description || 'No description provided.' }}
-          </p>
-        </div>
+      <!-- About Section -->
+      <div>
+        <h3 class="text-lg font-semibold text-[var(--color-brand1)] mb-2">About</h3>
+        <blockquote
+          class="text-gray-700 italic leading-relaxed bg-[var(--color-brand5)]/10 border-l-4 border-[var(--color-brand2)] pl-4 py-2 rounded-sm line-clamp-5"
+        >
+          “{{ library.description || 'No description provided.' }}”
+        </blockquote>
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-between items-center border-t border-[var(--color-brand3)]/20 pt-4">
-        <div class="flex gap-3">
-          @if (libraryId == library.id) {
-          <button
-            (click)="handleOnEdit(library)"
-            class="px-5 py-2 bg-[var(--color-brand2)] text-white font-medium rounded-lg hover:bg-[var(--color-brand3)] transition"
-          >
-            Edit Library
-          </button>
-          }
-        </div>
+      <div class="flex justify-end border-t border-[var(--color-brand3)]/20 pt-4">
+        @if (isLoggedIn() && libraryId == library.id) {
+        <button
+          (click)="handleOnEdit(library)"
+          class="px-5 py-2 bg-[var(--color-brand1)] text-white font-medium rounded-lg hover:bg-[var(--color-brand3)] transition"
+        >
+          Edit
+        </button>
+        }
       </div>
     </div>
   </div>
@@ -77,7 +84,7 @@
     <h2
       class="text-xl text-center md:text-left md:text-3xl font-bold text-[var(--color-brand1)] border-b-4 border-[var(--color-brand2)] pb-2 mb-6 tracking-wide uppercase"
     >
-      Book in this library
+      Books in this Library
     </h2>
 
     @if (books$ | async; as bookPage) { @if (bookPage.content.length > 0) {
@@ -87,6 +94,7 @@
         [libraryId]="libraryId"
         [role]="role"
         [book]="book"
+        [isLoggedIn]="isLoggedIn()"
         (addToCart)="handleOnAddToCart($event)"
         (buy)="handleOnBuy($event)"
         (copy)="handleOnCopy($event)"
@@ -96,7 +104,6 @@
       }
     </div>
 
-    <!-- Pagination -->
     <div class="mt-8">
       <app-pagination-component
         [pageNumber]="bookPage.pageNumber"

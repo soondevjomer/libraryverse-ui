@@ -2,6 +2,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../service/auth-service';
 import { inject } from '@angular/core';
 import { Role } from '../model/auth.model';
+import { log } from '@/utils/logger';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -22,7 +23,9 @@ export const authGuard: CanActivateFn = (route, state) => {
   const checkOwnership = route.data?.['checkOwnership'] as boolean | undefined;
   if (checkOwnership && requiredRole === Role.Librarian) {
     const libraryIdFromUrl = route.paramMap.get('libraryId');
+    log('libraryfromUrl: ', libraryIdFromUrl);
     const userLibraryId = authService.userClaim?.libraryId;
+    log('userLibraryId: ', userLibraryId);
 
     if (libraryIdFromUrl && userLibraryId) {
       if (libraryIdFromUrl !== userLibraryId.toString()) {

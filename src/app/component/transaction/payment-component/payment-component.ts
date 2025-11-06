@@ -1,5 +1,5 @@
 import { log, error } from '@/utils/logger';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ɵtriggerResourceLoading } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -14,10 +14,11 @@ import { PaymentMethod } from '../../../model/payment.model';
 import { AuthService } from '../../../service/auth-service';
 import { OrderService } from '../../../service/order-service';
 import { ToastService } from '../../../service/toast-service';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-payment-component',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LucideAngularModule],
   templateUrl: './payment-component.html',
   styles: ``,
 })
@@ -32,6 +33,7 @@ export class PaymentComponent implements OnInit {
 
   // SIGNALS
   submitted = signal<boolean>(false);
+  loading = signal(false);
 
   // DATA
   selected: Cart[] = [];
@@ -76,11 +78,13 @@ export class PaymentComponent implements OnInit {
         this.orderService.setOrderResponse(response);
         log('Order created successfully:', response);
         log('Order placed successfully!');
+        this.loading.set(false);
         this.router.navigate(['orders/summary']);
       },
       error: (err) => {
         error('Error creating order:', err);
         error('Something went wrong while creating order.');
+        this.loading.set(false);
       },
     });
   }
@@ -95,6 +99,7 @@ export class PaymentComponent implements OnInit {
       this.toastService.info('You got no selected book to buy');
       return;
     }
+    this.loading.set(true);
     const paymentMethod = this.paymentForm.get('paymentMethod')
       ?.value as keyof typeof PaymentMethod;
 
@@ -106,6 +111,7 @@ export class PaymentComponent implements OnInit {
         this.createOrderCall();
       } else {
         log('Payment Method is BANK/WALLET');
+        this.loading.set(false);
         this.router.navigate(['payment/process'], {
           state: this.createOrderRequest(),
         });
@@ -130,5 +136,18 @@ export class PaymentComponent implements OnInit {
           } as OrderItem)
       ),
     };
+  }
+  increaseQuantity(item: Cart) {
+    if (item.quantity < item.maxQuantity) {
+      item.quantity++;
+    }
+  }
+
+  decreaseQuantity(item: Cart) {
+    if (item.quantity > 1) {
+      item.quantity--;
+    } else {
+      this.toastService.info('Minimum quantity is 1');
+    }
   }
 }

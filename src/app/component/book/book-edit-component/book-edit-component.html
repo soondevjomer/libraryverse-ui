@@ -7,13 +7,13 @@
 <app-book-form-component
   [book]="book"
   [formMode]="editMode"
+  [isSubmitting]="loading"
+  [submittingInfo]="loadingInfo"
   (edit)="handleBookEdit($event)"
 ></app-book-form-component>
 
 } @else {
-<div class="animate-pulse max-w-4xl mx-auto px-4 py-8 space-y-4">
-  <div class="h-8 bg-gray-300 rounded w-1/4"></div>
-  <div class="bg-gray-200 h-72 rounded-2xl"></div>
-  <p class="text-gray-500 italic">Loading book details...</p>
+<div class="h-40 flex items-center justify-center italic font-semibold text-brand1">
+  Book not found
 </div>
 }

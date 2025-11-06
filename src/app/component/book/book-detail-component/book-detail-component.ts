@@ -31,6 +31,11 @@ export class BookDetailComponent implements OnInit {
   role = this.authService._role();
   Role = Role;
 
+  libraryId = Number(this.authService.userClaim?.libraryId);
+
+  // User
+  isLoggedIn = this.authService.isLoggedIn;
+
   // Signals
   loading = signal<boolean>(false);
 
@@ -48,7 +53,7 @@ export class BookDetailComponent implements OnInit {
       cachedBook
         ? of(cachedBook).pipe(
             // show cached immediately
-            tap(() => log('Showing cached book')),
+            tap((cachedBook) => log('Showing cached book', cachedBook)),
             switchMap(() =>
               this.bookService.getBookById(bookId).pipe(
                 // then always fetch latest
@@ -75,9 +80,15 @@ export class BookDetailComponent implements OnInit {
     this.router.navigate(['books']);
   }
 
-  handleOnAddToCart(bookId: number) {
+  handleOnAddToCart(book: Book) {
+    if (!this.isLoggedIn()) {
+      this.toastService.info('Please log in first');
+      this.router.navigate(['login']);
+      return;
+    }
+
     this.cartService
-      .addToCart(bookId)
+      .addToCart(book.id)
       .pipe(tap(() => log('Adding to cart from book detail')))
       .subscribe({
         next: () => this.toastService.success('Book add to cart successfully'),
@@ -85,11 +96,28 @@ export class BookDetailComponent implements OnInit {
       });
   }
 
-  handleOnEdit(bookId: number) {
-    this.router.navigate(['books/edit', bookId]);
+  handleOnEdit(book: Book) {
+    if (!this.isLoggedIn()) {
+      this.toastService.info('Please log in first');
+      this.router.navigate(['login']);
+      return;
+    }
+    this.router.navigate(['books/edit', book.id], { state: { book: book } });
   }
 
   handleOnBuy(book: Book) {
+    if (!this.isLoggedIn()) {
+      this.toastService.info('Please log in first');
+      this.router.navigate(['login']);
+      return;
+    }
+
+    const quantity = book.inventory?.availableStock;
+    if (quantity == undefined || quantity <= 0 || quantity == null) {
+      this.toastService.info('No available stock to buy');
+      return;
+    }
+
     const buyRequest: Cart[] = [
       {
         bookId: book.id,
@@ -100,5 +128,9 @@ export class BookDetailComponent implements OnInit {
       },
     ];
     this.router.navigate(['payment'], { state: { selected: buyRequest } });
+  }
+
+  handleOnCopy(book: Book) {
+    this.router.navigate(['books/create', { state: { book: book } }]);
   }
 }

@@ -25,30 +25,31 @@ export interface RegisterRequest {
 }
 
 export interface UserClaim {
-  sub: string, // user id / username
-  role: Role,
-  libraryId?: string,
-  libraryName?: string,
-  userId?: string | number,
-  name: string,
-  username: string,
-  exp?: number,
-  iat?: number,
-  customerId: string | number,
-  address?: string,
-  contactNumber?: string,
-  email: string,
-  image?: string,
+  sub: string; // user id / username
+  role: Role;
+  libraryId?: string;
+libraryName?: string;
+  userId?: string | number;
+  name: string;
+  username: string;
+  exp?: number;
+  iat?: number;
+  customerId: string | number;
+  address?: string;
+  contactNumber?: string;
+  email: string;
+  image?: string;
+  imageThumbnail?: string;
 }
 
 export enum Role {
-    Librarian = "LIBRARIAN",
-    Reader = "READER",
-    Guest = "GUEST"
+  Librarian = 'LIBRARIAN',
+  Reader = 'READER',
+  Guest = 'GUEST',
 }
 
 export enum FormMode {
-    Edit = "EDIT",
-    Add = "ADD",
-    Copy = "COPY"
+  Edit = 'EDIT',
+  Add = 'ADD',
+  Copy = 'COPY',
 }

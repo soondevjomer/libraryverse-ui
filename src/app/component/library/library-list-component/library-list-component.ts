@@ -35,7 +35,7 @@ export class LibraryListComponent implements OnInit {
   private fb = inject(FormBuilder);
 
   // DATA
-  libraryPage$!: Observable<Page<Library>>;
+  libraryPage$ = this.libraryStoreService.libraries$;
 
   // USER INFO
   role = this.authService._role;
@@ -68,19 +68,13 @@ export class LibraryListComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildFilterForm();
-    this.loadLibraries({
-      page: 0,
-      search: '',
-      sortBy: this.defaultSortBy,
-      sortDirection: this.defaultSortDirection,
-      libraryId: 0,
-    });
+    this.loadLibraries(this.createSearchFilter(0), true);
 
     // when filter change
     this.filterForm.valueChanges
       .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
+        debounceTime(150),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         tap(() => {
           this.currentPage = 0;
           this.loadLibraries(this.createSearchFilter());
@@ -94,7 +88,6 @@ export class LibraryListComponent implements OnInit {
       searchName: [''],
       sortBy: [this.defaultSortBy],
       sortDirection: [this.defaultSortDirection],
-      libraryViewMode: ['allLibraries'],
     });
   }
 
@@ -103,6 +96,7 @@ export class LibraryListComponent implements OnInit {
     const sortBy = this.filterForm.get('sortBy')?.value ?? this.defaultSortBy;
     const sortDirection = this.filterForm.get('sortDirection')?.value ?? this.defaultSortDirection;
 
+    log('sort by = ', sortBy);
     const filter: SearchFilter = {
       search,
       sortBy,
@@ -118,18 +112,22 @@ export class LibraryListComponent implements OnInit {
     return filter;
   }
 
-  private loadLibraries(filter: SearchFilter) {
-    this.loading.set(false);
-    const effectiveFilter = filter ?? this.createSearchFilter();
+  private loadLibraries(filter: SearchFilter, forceRefresh = false) {
+    this.loading.set(true);
+    // const effectiveFilter = filter ?? this.createSearchFilter();
 
-    this.libraryPage$ = this.libraryStoreService.getLibraries(effectiveFilter).pipe(
-      tap((pageModel) => {
-        log('library pagedmodel: ', pageModel);
-        this.totalPages = pageModel.totalPage;
-        this.currentPage = pageModel.pageNumber;
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    // this.libraryPage$ = this.libraryStoreService.getLibraries(effectiveFilter, forceRefresh).pipe(
+    //   tap((pageModel) => {
+    //     log('library pagedmodel: ', pageModel);
+    //     this.totalPages = pageModel.totalPage;
+    //     this.currentPage = pageModel.pageNumber;
+    //   }),
+    //   finalize(() => this.loading.set(false))
+    // );
+    this.libraryStoreService
+      .getLibraries(filter, forceRefresh)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe();
   }
 
   toggleViewMode() {
@@ -140,14 +138,14 @@ export class LibraryListComponent implements OnInit {
     const newMode = this.libraryViewMode() === 'allLibraries' ? 'myLibrary' : 'allLibraries';
     log('new library mode is ', newMode);
     this.libraryViewMode.set(newMode);
-    this.filterForm.patchValue({ libraryViewMode: newMode });
+    this.loadLibraries(this.createSearchFilter(0), true);
   }
 
   toggleSortDirection() {
     const current = this.filterForm.get('sortDirection')?.value;
     const newDir = current === 'ASC' ? 'DESC' : 'ASC';
     this.filterForm.patchValue({ sortDirection: newDir });
-    this.loadLibraries(this.createSearchFilter(0));
+    this.reload();
   }
 
   onSearchKeyDown(e: KeyboardEvent) {
@@ -158,12 +156,7 @@ export class LibraryListComponent implements OnInit {
   }
 
   onSortChange() {
-    this.loadLibraries({
-      page: 0,
-      search: this.filterForm.get('searchName')?.value ?? '',
-      sortBy: this.filterForm.get('sortBy')?.value ?? this.defaultSortBy,
-      sortDirection: this.filterForm.get('sortDirection')?.value ?? this.defaultSortDirection,
-    });
+    this.reload();
   }
 
   handlePageChange(pageNumber: number) {
@@ -176,5 +169,9 @@ export class LibraryListComponent implements OnInit {
 
   handleOnEdit(library: Library) {
     if (library) this.router.navigate(['libraries/edit', library.id], { state: { library } });
+  }
+
+  private reload(page = 0) {
+    this.loadLibraries(this.createSearchFilter(page));
   }
 }

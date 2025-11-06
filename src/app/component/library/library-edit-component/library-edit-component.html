@@ -7,6 +7,8 @@
     <app-library-form-component
     [library]="library"
     [formMode]="editMode"
+    [isSubmitting]="loading"
+    [submittingInfo]="loadingInfo"
     (saveEdit)="handleLibraryEdit($event)"
     ></app-library-form-component>
 } 

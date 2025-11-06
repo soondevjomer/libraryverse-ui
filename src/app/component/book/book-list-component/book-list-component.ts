@@ -41,7 +41,7 @@ export class BookListComponent implements OnInit {
   private toastService = inject(ToastService);
 
   // DATA
-  bookPage$!: Observable<Page<Book>>;
+  bookPage$ = this.bookStoreService.books$;
 
   // USER INFO
   role = this.authService._role;
@@ -75,19 +75,13 @@ export class BookListComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildFilterForm();
-    this.loadBooks({
-      page: 0,
-      search: '',
-      sortBy: this.defaultSortBy,
-      sortDirection: this.defaultSortDirection,
-      libraryId: 0,
-    });
+    this.loadBooks(this.createSearchFilter(0), true);
 
     // when filter change
     this.filterForm.valueChanges
       .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
+        debounceTime(150),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         tap(() => {
           this.currentPage = 0;
           this.loadBooks(this.createSearchFilter());
@@ -101,7 +95,6 @@ export class BookListComponent implements OnInit {
       searchTitle: [''],
       sortBy: [this.defaultSortBy],
       sortDirection: [this.defaultSortDirection],
-      bookViewMode: ['allBooks'],
     });
   }
 
@@ -125,18 +118,11 @@ export class BookListComponent implements OnInit {
     return filter;
   }
 
-  private loadBooks(filter?: SearchFilter) {
+  private loadBooks(filter: SearchFilter, forceRefresh = false) {
     this.loading.set(true);
-    const effectiveFilter = filter ?? this.createSearchFilter();
-
-    this.bookPage$ = this.bookStoreService.getBooks(effectiveFilter).pipe(
-      tap((pageModel) => {
-        log('book pagedmodel: ', pageModel);
-        this.totalPages = pageModel.totalPage;
-        this.currentPage = pageModel.pageNumber;
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    this.bookStoreService.getBooks(filter, forceRefresh)
+    .pipe(finalize(()=>this.loading.set(false)))
+    .subscribe();
   }
 
   // UI HANDLERS
@@ -148,14 +134,14 @@ export class BookListComponent implements OnInit {
     const newMode = this.bookViewMode() === 'allBooks' ? 'myBooks' : 'allBooks';
     log('new book mode is ', newMode);
     this.bookViewMode.set(newMode);
-    this.filterForm.patchValue({ bookViewMode: newMode });
+    this.loadBooks(this.createSearchFilter(0), true);
   }
 
-  toggleSortDirection() {
+toggleSortDirection() {
     const current = this.filterForm.get('sortDirection')?.value;
     const newDir = current === 'ASC' ? 'DESC' : 'ASC';
     this.filterForm.patchValue({ sortDirection: newDir });
-    this.loadBooks(this.createSearchFilter(0));
+    this.reload();
   }
 
   onSearchKeyDown(e: KeyboardEvent) {
@@ -166,12 +152,11 @@ export class BookListComponent implements OnInit {
   }
 
   onSortChange() {
-    this.loadBooks({
-      page: 0,
-      search: this.filterForm.get('searchTitle')?.value ?? '',
-      sortBy: this.filterForm.get('sortBy')?.value ?? this.defaultSortBy,
-      sortDirection: this.filterForm.get('sortDirection')?.value ?? this.defaultSortDirection,
-    });
+    this.reload();
+  }
+
+  private reload(page = 0) {
+    this.loadBooks(this.createSearchFilter(page));
   }
 
   handlePageChange(pageNumber: number) {
@@ -188,7 +173,7 @@ export class BookListComponent implements OnInit {
       this.router.navigate(['login']);
       return;
     }
-    if (book.inventory?.availableStock == null || book.inventory.availableStock == 0) return;
+
     this.cartService.addToCart(book.id).subscribe({
       next: () => {
         log('Added to cart');
@@ -208,18 +193,11 @@ export class BookListComponent implements OnInit {
       return;
     }
 
-    log('book', book);
-
-    if (book.inventory?.availableStock !== undefined && book.inventory?.availableStock !== null) {
-      log('Have an available stock value');
-
-      if (book.inventory.availableStock <= 0) {
-        this.toastService.info('No available stock to buy');
-        return;
-      }
+    const quantity = book.inventory?.availableStock;
+    if (quantity==undefined || quantity<=0 || quantity==null) {
+      this.toastService.info('No available stock to buy');
+      return;
     }
-
-    log('Buying book:', book.bookDetail.title);
 
     const cartRequests: Cart[] = [
       {
@@ -227,7 +205,7 @@ export class BookListComponent implements OnInit {
         bookId: book.id,
         bookName: book.bookDetail.title,
         price: book.bookDetail.price,
-        quantity: 1,
+        quantity: quantity,
         maxQuantity: book.inventory?.availableStock ?? 0,
       },
     ];

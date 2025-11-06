@@ -1,0 +1,181 @@
+<form [formGroup]="profileForm" class="space-y-6">
+  <!-- Avatar Upload -->
+  <!-- Avatar Upload -->
+  <div class="flex flex-col items-center justify-center gap-4">
+    @if (!isSubmitting()) {
+    <div class="relative">
+      <img
+        [src]="previewUrl() ? previewUrl() : profile.image ? baseUrl + profile.image : ''"
+        alt="Profile Image"
+        class="w-40 h-40 rounded-full object-cover border-4 border-[var(--color-brand2)] shadow-md bg-[var(--color-brand6)] transition-all duration-300"
+      />
+
+      <!-- Upload -->
+      <label
+        class="absolute bottom-2 right-2 bg-[var(--color-brand1)] hover:bg-[var(--color-brand3)] text-white rounded-full p-2 shadow-md transition-colors cursor-pointer"
+        title="Change Profile Picture"
+      >
+        <lucide-icon name="camera" class="w-5 h-5"></lucide-icon>
+        <input type="file" hidden accept="image/*" (change)="onFileSelected($event)" />
+      </label>
+    </div>
+    } @else {
+    <div
+      class="w-40 h-40 rounded-full border-4 border-[var(--color-brand3)] flex items-center justify-center bg-[var(--color-brand6)] shadow-md"
+    >
+      <lucide-icon
+        name="loader"
+        class="w-8 h-8 text-[var(--color-brand3)] animate-spin"
+      ></lucide-icon>
+    </div>
+    } @if (fileError) {
+    <p class="text-red-500 text-sm">{{ fileError }}</p>
+    }
+  </div>
+
+  <!-- Crop Modal -->
+  @if (showCropper()) {
+  <div
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50"
+    (click)="cancelCrop()"
+  >
+    <div
+      class="relative bg-[var(--color-brand4)] rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-lg font-semibold text-[var(--color-brand1)] mb-4">Crop Profile Picture</h2>
+
+      <div class="border border-[var(--color-brand2)] rounded-lg overflow-hidden">
+        <image-cropper
+          [imageChangedEvent]="imageChangeEvent()"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="1 / 1"
+          format="webp"
+          [resizeToWidth]="cropWidth()"
+          [resizeToHeight]="cropHeight()"
+          (imageCropped)="onImageCropped($event)"
+          class="w-full h-[300px]"
+        ></image-cropper>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-4">
+        <button
+          type="button"
+          (click)="cancelCrop()"
+          class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-[var(--color-brand1)]"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="confirmCrop()"
+          class="px-4 py-2 rounded bg-[var(--color-brand2)] hover:bg-[var(--color-brand3)] text-[var(--color-brand4)]"
+        >
+          Apply
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Input Fields -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div>
+      <label class="block font-semibold text-[var(--color-brand1)] mb-1"
+        >Full Name <span class="text-red-500">*</span></label
+      >
+      <input
+        formControlName="name"
+        type="text"
+        class="w-full border border-[var(--color-brand2)] rounded-md px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand3)]"
+      />
+      @if (profileForm.get('name')?.touched && profileForm.get('name')?.invalid) {
+      <p class="text-sm text-red-500 mt-1">Required</p>
+      }
+    </div>
+
+    <div>
+      <label class="block font-semibold text-[var(--color-brand1)] mb-1"
+        >Username <span class="text-red-500">*</span></label
+      >
+      <input
+        formControlName="username"
+        type="text"
+        class="w-full border border-[var(--color-brand2)] rounded-md px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand3)]"
+        [class.border-red-500]="
+          profileForm.get('username')?.touched &&
+          (profileForm.get('username')?.invalid || usernameTaken)
+        "
+      />
+      @if (profileForm.get('username')?.touched &&
+      profileForm.get('username')?.hasError('required')) {
+      <p class="text-red-500 text-sm mt-1">Username is required</p>
+      } @else if (usernameTaken) {
+      <p class="text-red-500 text-sm mt-1">Username already taken</p>
+      }
+    </div>
+
+    <div>
+      <label class="block font-semibold text-[var(--color-brand1)] mb-1"
+        >Email <span class="text-red-500">*</span></label
+      >
+      <input
+        formControlName="email"
+        type="email"
+        class="w-full border border-[var(--color-brand2)] rounded-md px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand3)]"
+        [class.border-red-500]="
+          profileForm.get('email')?.touched && (profileForm.get('email')?.invalid || emailTaken)
+        "
+      />
+      @if (profileForm.get('email')?.touched) { @if (profileForm.get('email')?.hasError('required'))
+      {
+      <p class="text-red-500 text-sm mt-1">Email is required</p>
+      } @else if (profileForm.get('email')?.hasError('email')) {
+      <p class="text-red-500 text-sm mt-1">Please enter a valid email address</p>
+      } @else if (emailTaken) {
+      <p class="text-red-500 text-sm mt-1">Email already taken</p>
+      } }
+    </div>
+
+    @if (role == Role.Reader) {
+    <div>
+      <label class="block font-semibold text-[var(--color-brand1)] mb-1">Contact Number</label>
+      <input
+        formControlName="contactNumber"
+        type="text"
+        class="w-full border border-[var(--color-brand2)] rounded-md px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand3)]"
+      />
+    </div>
+
+    <div class="md:col-span-2">
+      <label class="block font-semibold text-[var(--color-brand1)] mb-1">Address</label>
+      <textarea
+        formControlName="address"
+        rows="2"
+        class="w-full border border-[var(--color-brand2)] rounded-md px-3 py-2 focus:ring-2 focus:ring-[var(--color-brand3)] resize-none"
+      ></textarea>
+    </div>
+    }
+  </div>
+
+  <!-- Save Button -->
+  <div class="flex justify-end pt-4">
+    @if (!isSubmitting()) {
+    <button
+      (click)="onSave()"
+      class="flex items-center gap-2 bg-[var(--color-brand2)] text-white px-6 py-2 rounded-md hover:bg-[var(--color-brand3)] transition-colors"
+    >
+      <lucide-icon name="save" class="w-4 h-4"></lucide-icon>
+      Save
+    </button>
+    } @else {
+    <button
+      disabled
+      class="flex items-center gap-2 bg-[var(--color-brand5)] text-white px-6 py-2 rounded-md opacity-70 cursor-not-allowed"
+    >
+      <lucide-icon name="loader" class="w-4 h-4 animate-spin"></lucide-icon>
+      {{ submittingInfo() ? submittingInfo() : 'Saving...' }}
+    </button>
+    }
+  </div>
+</form>

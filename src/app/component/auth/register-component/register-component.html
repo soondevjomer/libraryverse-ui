@@ -60,7 +60,7 @@
           placeholder="Enter your email"
           class="w-full px-4 py-3 border-2 border-[var(--color-brand2)] rounded-lg text-[var(--color-brand1)] placeholder:text-[var(--color-brand1)]/70 focus:outline-none focus:border-[var(--color-brand3)] focus:ring-2 focus:ring-[var(--color-brand3)] transition"
           [class.border-red-500]="
-            registerForm.get('username')?.touched &&
+            registerForm.get('email')?.touched &&
             (registerForm.get('email')?.invalid || emailTaken())
           "
         />

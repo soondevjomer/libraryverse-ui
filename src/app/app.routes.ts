@@ -40,15 +40,6 @@ export const routes: Routes = [
         data: { role: Role.Librarian },
       },
       {
-        path: 'books/copy/:bookId',
-        loadComponent: () =>
-          import('./component/book/book-copy-component/book-copy-component').then(
-            (m) => m.BookCopyComponent
-          ),
-        canActivate: [authGuard],
-        data: { role: Role.Librarian },
-      },
-      {
         path: 'books/edit/:bookId',
         loadComponent: () =>
           import('./component/book/book-edit-component/book-edit-component').then(
@@ -117,7 +108,7 @@ export const routes: Routes = [
       {
         path: 'libraries/edit/:libraryId',
         loadComponent: () =>
-          import('./component/library/library-edit-component/library-edit-component').then(
+        import('./component/library/library-edit-component/library-edit-component').then(
             (m) => m.LibraryEditComponent
           ),
         canActivate: [authGuard],

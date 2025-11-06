@@ -4,7 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { buildHttpParams } from 'app/utils/build-http-params';
 import { Observable } from 'rxjs';
-import { Library, LibraryRequest, LibraryStat } from '../model/library.model';
+import { Library, LibraryInfo, LibraryRequest, LibraryStat } from '../model/library.model';
 import { Page } from '../model/page.model';
 import { SearchFilter } from '../model/search.model';
 
@@ -30,7 +30,7 @@ export class LibraryService {
     return this.http.get<Library>(`${this.baseUrl}/libraries/${libraryId}`);
   }
 
-  updateLibraryById(libraryId: number, libraryReq: LibraryRequest, file?: File): Observable<Library> {
+  updateLibraryById(libraryId: number, libraryReq: LibraryRequest, file?: File | Blob): Observable<Library> {
     log('update library by id');
     const payload = structuredClone(libraryReq);
   
@@ -43,9 +43,20 @@ export class LibraryService {
     
     const formData = new FormData();
     formData.append('library', new Blob([JSON.stringify(libraryReq)], { type: 'application/json' }));
-    if (file) formData.append('file', file);
+    if (file) {
+      const fileWithType =
+        file instanceof File
+          ? file
+          : new File([file], 'library-cover.webp', { type: file.type || 'image/webp' });
+
+      formData.append('file', fileWithType);
+    }
 
     return this.http.put<Library>(`${this.baseUrl}/libraries/${libraryId}`, formData);
+  }
+
+  getLibraryInfo(libraryId:number):Observable<LibraryInfo> {
+    return this.http.get<LibraryInfo>(`${this.baseUrl}/libraries/info/${libraryId}`);
   }
   
 }

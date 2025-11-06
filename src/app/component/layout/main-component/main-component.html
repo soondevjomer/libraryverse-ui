@@ -27,8 +27,6 @@
   <!-- Right side -->
   <div class="flex items-center space-x-4">
     @if (isLoggedIn()) {
-    <div class="flex items-center space-x-4">
-      @if (isLoggedIn()) {
       <div class="relative">
         <!-- Profile Button -->
         <button
@@ -76,15 +74,6 @@
       </button>
       }
     </div>
-    } @else {
-    <button
-      (click)="gotoLogin()"
-      class="bg-[var(--color-brand2)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-brand3)] hover:text-[var(--color-brand4)] transition"
-    >
-      Login
-    </button>
-    }
-  </div>
 </div>
 
 <!-- Mobile navigation (below topbar) -->

@@ -4,6 +4,7 @@ export interface Profile {
     email:string,
 
     image?:string|File,
+    imageThumbnail?:string|File,
     address?:string,
     contactNumber?:string
 }

@@ -16,6 +16,7 @@ export class BookCardComponent {
   @Input() book!: Book;
   @Input() libraryId: number = 0;
   @Input() role!: Role;
+  @Input() isLoggedIn:boolean = false;
   @Output() view = new EventEmitter<Book>();
   @Output() addToCart = new EventEmitter<Book>();
   @Output() buy = new EventEmitter<Book>();

@@ -1,4 +1,13 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, Signal, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  Signal,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -9,10 +18,12 @@ import {
 import { FormMode, Role } from '../../../model/auth.model';
 import { Book } from '../../../model/book.model';
 import { LucideAngularModule } from 'lucide-angular';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { log } from '@/utils/logger';
 
 @Component({
   selector: 'app-book-form-component',
-  imports: [ReactiveFormsModule, LucideAngularModule],
+  imports: [ReactiveFormsModule, LucideAngularModule, ImageCropperComponent],
   templateUrl: './book-form-component.html',
   styles: ``,
 })
@@ -24,9 +35,9 @@ export class BookFormComponent implements OnInit {
   @Input() isSubmitting = signal(false);
   @Input() submittingInfo = signal<string | null>(null);
   @Input() formMode: FormMode = FormMode.Add;
-  @Output() create = new EventEmitter<Book>();
-  @Output() edit = new EventEmitter<Book>();
-  @Output() bookCopy = new EventEmitter<Book>();
+  @Output() create = new EventEmitter<{ book: Book; file?: File }>();
+  @Output() edit = new EventEmitter<{ book: Book; file?: File }>();
+  @Output() bookCopy = new EventEmitter<{ book: Book; file?: File }>();
 
   bookForm!: FormGroup;
   genreInput = new FormControl('');
@@ -40,6 +51,11 @@ export class BookFormComponent implements OnInit {
   fileError: string | null = null;
   submitted: boolean = false;
   isPreviewLoading = signal(false);
+  showCropper = signal(false);
+  imageChangeEvent = signal<any>(null);
+  croppedFile: File | null = null;
+  cropWidth = signal(1024);
+  cropHeight = signal(1536);
 
   ngOnInit(): void {
     this.bookForm = this.buildForm();
@@ -56,6 +72,7 @@ export class BookFormComponent implements OnInit {
         seriesTitle: [''],
         description: [''],
         bookCover: [null],
+        bookThumbnailCover: [null],
         genres: [[]],
         authors: [[]],
         publisher: [''],
@@ -83,6 +100,7 @@ export class BookFormComponent implements OnInit {
         seriesTitle: book.bookDetail?.seriesTitle ?? '',
         description: book.bookDetail?.description ?? '',
         bookCover: book.bookDetail?.bookCover ?? null,
+        bookThumbnailCover: book.bookDetail?.bookThumbnailCover ?? null,
         genres: book.bookDetail?.genres ?? [],
         authors: book.bookDetail?.authors ?? [],
         publisher: book.bookDetail?.publisher ?? '',
@@ -97,30 +115,46 @@ export class BookFormComponent implements OnInit {
 
   // ---------- CRUD Emitters ----------
   onCreate() {
-    this.submitted=true;
+    this.submitted = true;
     if (this.bookForm.invalid || this.fileError) {
       this.bookForm.markAllAsTouched();
       return;
     }
-    this.create.emit(this.bookForm.value as Book);
+    const book = this.bookForm.value as Book;
+    if (this.croppedFile) {
+      this.create.emit({ book, file: this.croppedFile });
+    } else {
+      this.create.emit({ book });
+    }
   }
 
   onSave() {
-    this.submitted=true;
+    this.submitted = true;
     if (this.bookForm.invalid || this.fileError) {
       this.bookForm.markAllAsTouched();
       return;
     }
-    this.edit.emit(this.bookForm.value as Book);
+    const book = this.bookForm.value as Book;
+    if (this.croppedFile) {
+      this.edit.emit({ book, file: this.croppedFile });
+    } else {
+      this.edit.emit({ book });
+    }
   }
 
   onCopy() {
-    this.submitted=true;
+    this.submitted = true;
     if (this.bookForm.invalid || this.fileError) {
       this.bookForm.markAllAsTouched();
       return;
     }
-    this.bookCopy.emit(this.bookForm.value as Book);
+    const book = this.bookForm.value as Book;
+
+    if (this.croppedFile) {
+      this.bookCopy.emit({ book, file: this.croppedFile });
+    } else {
+      this.bookCopy.emit({ book });
+    }
   }
 
   // ---------- Genre / Author ----------
@@ -189,10 +223,17 @@ export class BookFormComponent implements OnInit {
 
     const file = input.files[0];
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    const sizeMB = file.size / (1024 * 1024);
-    const minSizeMb = 0.01;
-    const maxSizeMb = 5;
+    const minSizeMb = 0.05;
+    const maxSizeMb = 10;
 
+    if (!allowedTypes.includes(file.type)) {
+      this.fileError = 'Only JPG, PNG, WEBP formats are allowed.';
+      this.previewUrl.set(null);
+      this.bookForm.get('bookDetail.bookCover')?.reset();
+      return;
+    }
+
+    const sizeMB = file.size / (1024 * 1024);
     if (sizeMB < minSizeMb || sizeMB > maxSizeMb) {
       this.fileError = `Book cover must be between ${minSizeMb} MB and ${maxSizeMb} MB.`;
       this.previewUrl.set(null);
@@ -200,23 +241,38 @@ export class BookFormComponent implements OnInit {
       return;
     }
 
-    if (!allowedTypes.includes(file.type)) {
-      this.fileError = 'Only JPG, PNG, or WEBP formats are allowed.';
-      this.previewUrl.set(null);
-      this.bookForm.get('bookDetail.bookCover')?.reset();
+    this.imageChangeEvent.set(event);
+    this.showCropper.set(true);
+  }
+
+  onImageCropped(e: ImageCroppedEvent) {
+    if (!e.blob) return;
+
+    const mimeType = e.blob.type || 'image/png';
+    const ext = mimeType.split('/')[1]; // "png", "jpeg", etc.
+
+    this.croppedFile = new File([e.blob], `book-cover.${ext}`, { type: mimeType });
+
+    log('croppedFIle ', this.croppedFile);
+    const reader = new FileReader();
+    reader.onload = () => this.previewUrl.set(reader.result);
+    reader.readAsDataURL(this.croppedFile);
+  }
+
+  confirmCrop() {
+    if (!this.croppedFile) {
+      this.fileError = 'Please crop the image first.';
       return;
     }
+    this.bookForm.get('bookDetail.bookCover')?.setValue(this.croppedFile);
+    this.showCropper.set(false);
+  }
 
-    this.fileError = null;
-    this.isPreviewLoading.set(true);
-    this.bookForm.get('bookDetail.bookCover')?.setValue(file);
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.previewUrl.set(reader.result);
-      this.isPreviewLoading.set(false);
-    };
-    reader.readAsDataURL(file);
+  cancelCrop() {
+    this.showCropper.set(false);
+    this.croppedFile = null;
+    this.imageChangeEvent.set(null);
+    this.bookForm.get('bookDetail.bookCover')?.setValue(null);
   }
 
   removeCover() {

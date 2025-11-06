@@ -9,8 +9,8 @@ export interface BookDetail {
     publisher?: string,
     publishedYear?: number,
     price: number,
-    quantity: number,
     bookCover?: string | File,
+    bookThumbnailCover?: string | File,
 }
 
 export interface Book {

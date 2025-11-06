@@ -1,11 +1,14 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { Library } from '../../../model/library.model';
 import { FormMode, Role } from '../../../model/auth.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { log } from '@/utils/logger';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-library-form-component',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LucideAngularModule, ImageCropperComponent],
   templateUrl: './library-form-component.html',
   styleUrl: './library-form-component.css',
 })
@@ -16,16 +19,24 @@ export class LibraryFormComponent implements OnInit {
   // DATA
   @Input() library!: Library;
   @Input() formMode: FormMode = FormMode.Edit;
-  @Output() saveEdit = new EventEmitter<Library>();
+  @Input() isSubmitting = signal(false);
+  @Input() submittingInfo = signal<string | null>(null);
+  @Output() saveEdit = new EventEmitter<{ library: Library; file?: File }>();
 
   // FORMS
   libraryForm!: FormGroup;
   FormMode = FormMode;
 
   // UTILS
-  previewUrl: string | ArrayBuffer | null = null;
+  previewUrl = signal<string | ArrayBuffer | null>(null);
   fileError: string | null = null;
   submitted: boolean = false;
+  isPreviewLoading = signal(false);
+  showCropper = signal(false);
+  imageChangeEvent = signal<any>(null);
+  croppedFile: File | null = null;
+  cropWidth = signal(1920);
+  cropHeight = signal(960);
 
   ngOnInit(): void {
     this.libraryForm = this.buildForm();
@@ -40,6 +51,7 @@ export class LibraryFormComponent implements OnInit {
       contactNumber: [],
       description: [],
       libraryCover: [null],
+      libraryThumbnailCover: [null],
     });
   }
 
@@ -61,7 +73,12 @@ export class LibraryFormComponent implements OnInit {
       this.libraryForm.markAllAsTouched();
       return;
     }
-    this.saveEdit.emit(this.libraryForm.value as Library);
+    const library = this.libraryForm.value as Library;
+    if (this.croppedFile) {
+    this.saveEdit.emit({ library, file: this.croppedFile });
+  } else {
+    this.saveEdit.emit({ library });
+  }
   }
 
   onFileSelected(event: Event) {
@@ -69,32 +86,61 @@ export class LibraryFormComponent implements OnInit {
     if (!input.files?.length) return;
 
     const file = input.files[0];
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const allowedTypes = ['image/jpeg', 'image/png'];
     const sizeMB = file.size / (1024 * 1024);
+    const minSizeMb = 0.001;
+    const maxSizeMb = 10;
 
-    if (sizeMB < 0.01 || sizeMB > 5) {
-      this.fileError = 'Library cover must be between 0.2 MB and 5 MB.';
-      this.previewUrl = null;
+    if (sizeMB < minSizeMb || sizeMB > maxSizeMb) {
+      this.fileError = `Library cover must be between ${minSizeMb} MB and ${maxSizeMb} MB.`;
+      this.previewUrl.set(null);
       this.libraryForm.get('libraryCover')?.reset();
       return;
     }
 
     if (!allowedTypes.includes(file.type)) {
-      this.fileError = 'Only JPG, PNG, or WEBP formats are allowed.';
-      this.previewUrl = null;
+      this.fileError = 'Only JPG, PNG formats are allowed.';
+      this.previewUrl.set(null);
       this.libraryForm.get('libraryCover')?.reset();
       return;
     }
 
-    this.fileError = null;
-    this.libraryForm.get('libraryCover')?.setValue(file);
+    this.imageChangeEvent.set(event);
+    this.showCropper.set(true);
+  }
+
+  onImageCropped(e: ImageCroppedEvent) {
+    if (!e.blob) return;
+
+    const mimeType = e.blob.type || 'image/png';
+    const ext = mimeType.split('/')[1]; // "png", "jpeg", etc.
+
+    this.croppedFile = new File([e.blob], `library-cover.${ext}`, { type: mimeType });
+
+    log('croppedFile ', this.croppedFile);
     const reader = new FileReader();
-    reader.onload = () => (this.previewUrl = reader.result);
-    reader.readAsDataURL(file);
+    reader.onload = () => this.previewUrl.set(reader.result);
+    reader.readAsDataURL(this.croppedFile);
+  }
+
+  confirmCrop() {
+    if (!this.croppedFile) {
+      this.fileError = 'Please crop the image first.';
+      return;
+    }
+    this.libraryForm.get('libraryCover')?.setValue(null);
+    this.showCropper.set(false);
+  }
+
+  cancelCrop() {
+    this.showCropper.set(false);
+    this.croppedFile = null;
+    this.imageChangeEvent.set(null);
+    this.libraryForm.get('libraryCover')?.setValue(null);
   }
 
   removeCover() {
-    this.previewUrl = null;
+    this.previewUrl.set(null);
     this.fileError = null;
     this.libraryForm.get('libraryCover')?.reset();
   }

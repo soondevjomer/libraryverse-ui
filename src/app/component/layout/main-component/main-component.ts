@@ -7,6 +7,7 @@ import { NAV_ITEMS, Navigation } from '../../../model/navigation.model';
 import { LucideAngularModule } from 'lucide-angular';
 import { ToastComponent } from '../../shared/toast-component/toast-component';
 import { environment } from '@env/environment';
+import { ProfileService } from '@/service/profile-service';
 
 @Component({
   selector: 'app-main-component',
@@ -25,18 +26,20 @@ export class MainComponent {
   //DEPENDECIES
   private authService = inject(AuthService);
   private router = inject(Router);
+  private profileService = inject(ProfileService);
 
   isMobileMenuOpen = signal<boolean>(false);
   isDropDownOpen = signal<boolean>(false);
 
   role = this.authService._role;
   isLoggedIn = this.authService.isLoggedIn;
-  name = signal<string | undefined>(this.authService.userClaim?.name);
 
-  userClaim = computed(() => this.authService.userClaim);
+  libraryId = Number(this.authService.userClaim?.libraryId);
 
   userInitial = signal('?');
   image = signal('');
+
+  profile = this.profileService.profile;
 
   baseUrl = environment.apiBaseUrl;
 
@@ -52,12 +55,13 @@ export class MainComponent {
 
   constructor() {
     effect(() => {
-      const claim = this.userClaim();
-      const newName = claim?.name;
-      const image = claim?.image;
-
-      this.userInitial.set(newName ? newName.charAt(0).toUpperCase() : '?');
-      this.image.set(image ? image : '');
+      const p = this.profile();
+      if (p) {
+        const newName = p.name;
+        const newImage = p.imageThumbnail;
+        this.userInitial.set(newName ? newName.charAt(0).toLocaleUpperCase():'?');
+        this.image.set(newImage ? newImage as string : '');
+      }
     });
   }
 
@@ -84,6 +88,10 @@ export class MainComponent {
     this.router.navigate(['profile']);
   }
 
+  gotoMyLibrary() {
+    this.router.navigate(['libraries/info', this.libraryId]);
+  }
+
   gotoDashboardOrBooks() {
     if (this.role == Role.Librarian.toString) {
       this.router.navigate(['dashboard']);
@@ -91,10 +99,9 @@ export class MainComponent {
       this.router.navigate(['books']);
     }
   }
-  
-  getLucideCss(isActive:boolean) {
-    const baseCss = "w-5 h-5 group-hover:text-brand1"
-    return isActive ? baseCss
-    : baseCss + " text-brand6"
+
+  getLucideCss(isActive: boolean) {
+    const baseCss = 'w-5 h-5 group-hover:text-brand1';
+    return isActive ? baseCss : baseCss + ' text-brand6';
   }
 }

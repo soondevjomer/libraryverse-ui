@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BookCopyComponent } from './book-copy-component';
+import { ProfileFormComponent } from './profile-form-component';
 
-describe('BookCopyComponent', () => {
-  let component: BookCopyComponent;
-  let fixture: ComponentFixture<BookCopyComponent>;
+describe('ProfileFormComponent', () => {
+  let component: ProfileFormComponent;
+  let fixture: ComponentFixture<ProfileFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BookCopyComponent]
+      imports: [ProfileFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BookCopyComponent);
+    fixture = TestBed.createComponent(ProfileFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

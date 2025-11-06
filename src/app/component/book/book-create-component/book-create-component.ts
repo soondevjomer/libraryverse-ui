@@ -31,15 +31,16 @@ export class BookCreateComponent implements OnInit {
 
   ngOnInit(): void {
     const cachedBook = window.history.state['book'];
+    log('CACHEEEEEE BOOOOOK: ', cachedBook)
     if (cachedBook) this.book = cachedBook;
   }
 
   // FUNCTIONS
-  handleCreate(book: Book) {
+  handleCreate({ book, file }: { book: Book; file?: File }) {
     log('handling create book');
 
     const inventory: Inventory = {
-      availableStock: book.bookDetail.quantity ?? 0,
+      availableStock: 0,
       shipped: 0,
       reservedStock: 0,
       delivered: 0,
@@ -47,13 +48,11 @@ export class BookCreateComponent implements OnInit {
     };
     book.inventory = inventory;
 
-    const file = book.bookDetail.bookCover;
-
     this.loading.set(true);
     this.loadingInfo.set('Creating book...');
-    // New unified flow: backend handles both book + optional file
+
     this.bookService
-      .createBookToLibrary(book, file instanceof File ? file : undefined)
+      .createBookToLibrary(book, file)
       .pipe(
         finalize(() => {
           this.loading.set(false);
@@ -64,11 +63,12 @@ export class BookCreateComponent implements OnInit {
         next: (response) => {
           this.toastService.success('Book created successfully');
           log('Book created successfully:', response);
+          book = response;
         },
         error: (err) => {
           this.toastService.error('Failed to create book');
           error('Error during book creation:', err);
         },
-      });
+    });
   }
 }

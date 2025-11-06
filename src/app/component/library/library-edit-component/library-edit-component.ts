@@ -32,10 +32,9 @@ export class LibraryEditComponent implements OnInit {
 
   // UI STATES
   loading = signal<boolean>(false);
+  loadingInfo = signal<string | null>(null);
 
   ngOnInit(): void {
-    log('First check if library id and user library id is same to access this');
-    log('Library Edit Component on init');
     this.library = window.history.state['library'];
     if (!this.library) {
       this.toastService.info('No library found');
@@ -45,19 +44,13 @@ export class LibraryEditComponent implements OnInit {
     log('library: ', this.library);
   }
 
-  handleLibraryEdit(library: Library) {
+  handleLibraryEdit({ library, file }: { library: Library, file?: File }) {
     if (!library) return;
-    log('UPDATING LIBRARY WITH THIS: ', library);
     this.loading.set(true);
-
-    const file = library.libraryCover;
-
-    if (typeof library.libraryCover !== 'string') {
-      library.libraryCover = '';
-    }
+    this.loadingInfo.set('Updating library...');
 
     this.libraryService
-      .updateLibraryById(library.id, library, file instanceof File ? file : undefined)
+      .updateLibraryById(library.id, library, file)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (updatedLibrary) => {

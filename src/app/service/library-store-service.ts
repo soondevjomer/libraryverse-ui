@@ -17,6 +17,7 @@ export class LibraryStoreService {
   private lastFilter: SearchFilter | null = null;
   private loading = signal(false);
   private error = signal<string | null>(null);
+  readonly libraries$ = this.cache$.asObservable();
 
   getLibraries(filter: SearchFilter, forceRefresh = false, role?: any): Observable<Page<Library>> {
     const cached = this.cache$.value;
@@ -77,7 +78,7 @@ export class LibraryStoreService {
       this.lastFilter.sortBy === filter.sortBy &&
       this.lastFilter.page === filter.page &&
       this.lastFilter?.sortDirection === filter.sortDirection &&
-      this.lastFilter?.libraryId === filter.libraryId
+      (this.lastFilter.libraryId ?? null) === (filter.libraryId ?? null)
     );
   }
 
