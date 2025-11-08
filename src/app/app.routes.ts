@@ -12,6 +12,11 @@ export const routes: Routes = [
     component: MainComponent,
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'books',
+      },
+      {
         path: 'login',
         component: LoginComponent,
       },
@@ -108,7 +113,7 @@ export const routes: Routes = [
       {
         path: 'libraries/edit/:libraryId',
         loadComponent: () =>
-        import('./component/library/library-edit-component/library-edit-component').then(
+          import('./component/library/library-edit-component/library-edit-component').then(
             (m) => m.LibraryEditComponent
           ),
         canActivate: [authGuard],

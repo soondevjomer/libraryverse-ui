@@ -20,8 +20,8 @@ export class BookCreateComponent implements OnInit {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
-  createMode: FormMode = FormMode.Add;
   book: Book = {} as Book;
+  formMode: FormMode = FormMode.Add;
 
   // UI STATES
   loading = signal<boolean>(false);
@@ -30,9 +30,11 @@ export class BookCreateComponent implements OnInit {
   libraryId = this.authService.userClaim?.libraryId;
 
   ngOnInit(): void {
-    const cachedBook = window.history.state['book'];
-    log('CACHEEEEEE BOOOOOK: ', cachedBook)
-    if (cachedBook) this.book = cachedBook;
+    const state = window.history.state as { book:Book, isCopy?:boolean };
+    if (state.book) this.book = state.book;
+    if (state.isCopy===true) this.formMode = FormMode.Copy;
+
+    console.log('formmode: ', this.formMode);
   }
 
   // FUNCTIONS
@@ -53,6 +55,42 @@ export class BookCreateComponent implements OnInit {
 
     this.bookService
       .createBookToLibrary(book, file)
+      .pipe(
+        finalize(() => {
+          this.loading.set(false);
+          this.loadingInfo.set(null);
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          this.toastService.success('Book created successfully');
+          log('Book created successfully:', response);
+          book = response;
+        },
+        error: (err) => {
+          this.toastService.error('Failed to create book');
+          error('Error during book creation:', err);
+        },
+    });
+  }
+
+  handleCopy({book,file}:{book:Book,file?:File}){
+    log('Creating copied book');
+
+    const inventory: Inventory = {
+      availableStock: 0,
+      shipped: 0,
+      reservedStock: 0,
+      delivered: 0,
+      id: 0,
+    };
+    book.inventory = inventory;
+
+    this.loading.set(true);
+    this.loadingInfo.set('Creating book...');
+
+    this.bookService
+      .copyBookToLibrary(book, file)
       .pipe(
         finalize(() => {
           this.loading.set(false);

@@ -65,6 +65,16 @@
         <span>{{ truncateText(book.bookDetail.genres?.join(', ') || 'N/A', 40) }}</span>
       </p>
 
+      <p
+      (click)="goToLibrary(book.libraryId)"
+        class="text-sm text-gray-700 truncate flex items-center gap-1"
+        [title]="book.libraryName || 'Unknown'"
+      >
+      <lucide-icon name="library" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+        <span class="font-medium">Library:</span>
+        <span>{{ truncateText(book.libraryName || 'Unknown', 40) }}</span>
+      </p>
+
       <!-- Stock Info -->
       <div class="flex items-start justify-between text-sm text-gray-600">
         @if (book.inventory) { @if (isLoggedIn && role == Role.Librarian) {

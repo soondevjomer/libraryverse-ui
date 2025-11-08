@@ -219,7 +219,7 @@ toggleSortDirection() {
 
   handleOnCopy(book: Book) {
     log('Copying book:', book);
-    this.router.navigate(['books/create'], { state: { book } });
+    this.router.navigate(['books/create'], { state: { book, isCopy:true } });
   }
 
   // safe formatting helpers — put these inside BookListComponent
@@ -233,5 +233,9 @@ toggleSortDirection() {
     if (!book) return 'N/A';
     const genres = book.bookDetail?.genres;
     return genres && genres.length ? genres.join(', ') : 'N/A';
+  }
+
+  handleToLibrary(libraryId: number) {
+    this.router.navigate(['libraries', libraryId]);
   }
 }

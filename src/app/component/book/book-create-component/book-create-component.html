@@ -6,11 +6,11 @@
 </h2>
 <div>
   <app-book-form-component
-    [formMode]="createMode"
+    [formMode]="formMode"
     [book]="book"
     [isSubmitting]="loading"
     [submittingInfo]="loadingInfo"
     (create)="handleCreate($event)"
-    (bookCopy)="handleCreate($event)"
+    (bookCopy)="handleCopy($event)"
   ></app-book-form-component>
 </div>

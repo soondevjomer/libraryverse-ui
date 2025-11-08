@@ -17,6 +17,7 @@ export interface Book {
     id: number,
     isbn: string,
     libraryId: number,
+    libraryName?:string,
     bookDetail: BookDetail,
     inventory?: Inventory,
     popularityScore: number,

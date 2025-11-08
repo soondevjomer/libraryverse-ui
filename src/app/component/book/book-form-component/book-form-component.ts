@@ -154,7 +154,7 @@ export class BookFormComponent implements OnInit {
       this.bookCopy.emit({ book, file: this.croppedFile });
     } else {
       this.bookCopy.emit({ book });
-    }
+  }
   }
 
   // ---------- Genre / Author ----------

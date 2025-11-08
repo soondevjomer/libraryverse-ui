@@ -60,6 +60,40 @@ export class BookService {
     return this.http.post<Book>(`${this.baseUrl}/books/create`, formData);
   }
 
+  copyBookToLibrary(book: Book, file?: File | Blob): Observable<Book> {
+    log('BOOK_SERVICE: COPYING BOOK TO LIBRARY');
+    console.log('file is instance of File:', file instanceof File);
+    console.log('file content:', file);
+
+    const payload = structuredClone(book);
+
+    // Ensure no File or nested object is serialized incorrectly
+    if (payload.bookDetail?.bookCover instanceof File) {
+      payload.bookDetail.bookCover = '';
+    }
+
+    // Optional: ensure publisher is a string
+    if (typeof payload.bookDetail?.publisher === 'object') {
+      payload.bookDetail.publisher = '';
+    }
+
+    // Log the exact JSON we send
+    log('Payload JSON:', JSON.stringify(payload, null, 2));
+
+    const formData = new FormData();
+    formData.append('book', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+    if (file) {
+      const fileWithType =
+        file instanceof File
+          ? file
+          : new File([file], 'book-cover.webp', { type: file.type || 'image/webp' });
+
+      formData.append('file', fileWithType);
+    }
+
+    return this.http.post<Book>(`${this.baseUrl}/books/copy`, formData);
+  }
+
   updateBook(bookId: number, book: Book, file?: File | Blob): Observable<Book> {
     log('BOOK_SERVICE: UPDATING BOOK TO LIBRARY');
     const payload = structuredClone(book);

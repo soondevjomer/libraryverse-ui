@@ -22,6 +22,7 @@ export class BookCardComponent {
   @Output() buy = new EventEmitter<Book>();
   @Output() edit = new EventEmitter<Book>();
   @Output() copy = new EventEmitter<Book>();
+  @Output() toLibrary = new EventEmitter<number>();
 
   baseUrl = environment.apiBaseUrl;
   defaultBookCover = environment.defaultBookCover;
@@ -55,5 +56,11 @@ export class BookCardComponent {
 
   getPopularityRating(popularityScore: number) {
     return Math.round(popularityScore);
+  }
+
+  goToLibrary(libraryId:number){
+    if (libraryId!=0) {
+      this.toLibrary.emit(libraryId);
+    }
   }
 }
