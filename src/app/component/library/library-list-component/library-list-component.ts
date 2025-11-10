@@ -1,19 +1,17 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
-import { debounceTime, distinctUntilChanged, finalize, Observable, tap } from 'rxjs';
-import { Library } from '../../../model/library.model';
-import { Page } from '../../../model/page.model';
-import { LibraryService } from '../../../service/library-service';
-import { AsyncPipe } from '@angular/common';
-import { LibraryCardComponent } from '../library-card-component/library-card-component';
-import { Router } from '@angular/router';
-import { PaginationComponent } from '../../shared/pagination-component/pagination-component';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SearchFilter, SortBy, SortDirection } from '../../../model/search.model';
-import { LibraryStoreService } from '../../../service/library-store-service';
-import { AuthService } from '../../../service/auth-service';
-import { Role } from '../../../model/auth.model';
-import { LucideAngularModule } from 'lucide-angular';
 import { log } from '@/utils/logger';
+import { AsyncPipe } from '@angular/common';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
+import { debounceTime, distinctUntilChanged, finalize, tap } from 'rxjs';
+import { Role } from '../../../model/auth.model';
+import { Library } from '../../../model/library.model';
+import { SearchFilter, SortBy, SortDirection } from '../../../model/search.model';
+import { AuthService } from '../../../service/auth-service';
+import { LibraryStoreService } from '../../../service/library-store-service';
+import { PaginationComponent } from '../../shared/pagination-component/pagination-component';
+import { LibraryCardComponent } from '../library-card-component/library-card-component';
 
 @Component({
   selector: 'app-library-list-component',

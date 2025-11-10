@@ -24,9 +24,16 @@ export class LibraryCardComponent {
   baseUrl = environment.apiBaseUrl;
   defaultLibraryCover = environment.defaultLibraryCover;
 
-  truncateText(text: string | undefined, limit: number): string {
+  truncateText(text: string | undefined | null, maxLength: number): string {
     if (!text) return '';
-    return text.length > limit ? text.substring(0, limit) + '…' : text;
+    if (text.length <= maxLength) return text;
+
+    // Find last space before maxLength - 3 to avoid cutting mid-word
+    let truncated = text.slice(0, maxLength - 3);
+    const lastSpace = truncated.lastIndexOf(' ');
+    if (lastSpace > 0) truncated = truncated.slice(0, lastSpace);
+
+    return truncated + '...';
   }
 
   onView(library: Library) {
