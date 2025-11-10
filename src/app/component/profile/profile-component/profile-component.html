@@ -31,7 +31,7 @@
     <div class="relative flex-shrink-0">
       @if (profile()?.image) {
       <img
-        [src]="baseUrl + profile()?.image"
+        [src]="imageUrl + profile()?.image"
         alt="{{ profile()?.name || 'Profile Image' }}"
         class="w-40 h-40 rounded-full object-cover border-4 border-[var(--color-brand2)] shadow-md bg-[var(--color-brand6)]"
       />

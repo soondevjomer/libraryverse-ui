@@ -46,7 +46,7 @@ export class LibraryDetailComponent implements OnInit {
   role = this.authService._role();
   libraryId = Number(this.authService.userClaim?.libraryId);
   isLoggedIn = this.authService.isLoggedIn;
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
   defaultLibraryCover = environment.defaultLibraryCover;
 
   // Pagination / filter state

@@ -43,7 +43,7 @@ export class ProfileFormComponent implements OnInit {
 
   profileForm!: FormGroup;
 
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
   Role = Role;
 
   ngOnInit(): void {

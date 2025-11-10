@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
   private router = inject(Router);
   private profileService = inject(ProfileService);
 
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
   role = this.authService.userClaim?.role;
 
   Role = Role;

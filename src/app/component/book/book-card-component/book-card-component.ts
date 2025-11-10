@@ -24,7 +24,7 @@ export class BookCardComponent {
   @Output() copy = new EventEmitter<Book>();
   @Output() toLibrary = new EventEmitter<number>();
 
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
   defaultBookCover = environment.defaultBookCover;
   Role = Role;
 

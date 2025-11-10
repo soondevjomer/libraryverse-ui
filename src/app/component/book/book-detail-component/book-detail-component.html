@@ -20,10 +20,10 @@
   >
     <!-- Book Cover -->
     <div class="w-full md:w-1/3 flex items-center justify-center p-6 bg-[var(--color-brand6)]">
-      <img
+    <img
         [src]="
           book.bookDetail.bookCover
-            ? baseUrl + book.bookDetail.bookCover
+            ? imageUrl + book.bookDetail.bookCover
             : 'default-book-cover.webp'
         "
         alt="{{ book.bookDetail.title }}"

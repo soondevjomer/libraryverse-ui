@@ -7,7 +7,7 @@
     <img
       [src]="
         book.bookDetail.bookThumbnailCover
-          ? baseUrl + book.bookDetail.bookThumbnailCover
+          ? imageUrl + book.bookDetail.bookThumbnailCover
           : defaultBookCover
       "
       [alt]="book.bookDetail.title || 'Default book cover'"

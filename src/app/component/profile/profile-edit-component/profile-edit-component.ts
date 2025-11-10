@@ -51,7 +51,7 @@ export class ProfileEditComponent implements OnInit {
 
   editMode = FormMode.Edit;
 
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
 
   ngOnInit(): void {
     this.profile = window.history.state['profile'];

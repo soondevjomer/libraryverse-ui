@@ -27,7 +27,7 @@ export class BookDetailComponent implements OnInit {
   private cartService = inject(CartService);
   private toastService = inject(ToastService);
 
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
   role = this.authService._role();
   Role = Role;
 

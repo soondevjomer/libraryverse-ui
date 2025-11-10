@@ -21,7 +21,7 @@ export class LibraryCardComponent {
 
   Role = Role;
 
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
   defaultLibraryCover = environment.defaultLibraryCover;
 
   truncateText(text: string | undefined | null, maxLength: number): string {
