@@ -14,8 +14,9 @@
 @if (library$ | async; as library) { @if (library && library.id) {
 <div class="max-w-6xl mx-auto px-4 py-8 space-y-10">
   <!-- Library Header Card -->
-  <div class="bg-[var(--color-brand4)] rounded-3xl shadow-lg border border-[var(--color-brand3)]/30 overflow-hidden">
-
+  <div
+    class="flex flex-col bg-[var(--color-brand4)] rounded-3xl shadow-lg border border-[var(--color-brand3)]/30 overflow-hidden"
+  >
     <!-- Cover Image -->
     <div class="relative w-full h-56 md:h-72 bg-[var(--color-brand6)]">
       <img
@@ -26,47 +27,47 @@
     </div>
 
     <!-- Library Info -->
-    <div class="p-6 md:p-10 space-y-6">
-      <!-- Title + Owner -->
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-brand1)]">
-          {{ library.name }}
-        </h1>
+    <div class="flex flex-col items-start p-6 md:p-10 gap-4 text-gray-700">
+      <!-- Library Name -->
+      <h1
+        class="text-3xl md:text-4xl font-bold text-[var(--color-brand1)] text-center md:text-left w-full"
+      >
+        {{ library.name }}
+      </h1>
 
-        <p class="text-sm md:text-base text-gray-700">
-          <lucide-icon name="user" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
-          <span class="font-medium">Owner:</span>
-          {{ library.ownerName || 'Unknown' }}
-        </p>
-      </div>
+      <!-- Owner -->
+      <p class="flex items-center gap-2 text-base">
+        <lucide-icon name="user" class="w-5 h-5 text-[var(--color-brand3)]"></lucide-icon>
+        <span class="font-semibold text-[var(--color-brand1)]">Owner:</span>
+        {{ library.ownerName || 'Unknown' }}
+      </p>
 
-      <!-- Contact + Address -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
-        <p>
-          <lucide-icon name="phone" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
-          <span class="font-semibold text-[var(--color-brand1)]">Contact:</span>
-          {{ library.contactNumber || 'Nothing provided' }}
-        </p>
+      <!-- Contact Number -->
+      <p class="flex items-center gap-2 text-base">
+        <lucide-icon name="phone" class="w-5 h-5 text-[var(--color-brand3)]"></lucide-icon>
+        <span class="font-semibold text-[var(--color-brand1)]">Contact:</span>
+        {{ library.contactNumber || 'Nothing provided' }}
+      </p>
 
-        <p>
-          <lucide-icon name="map-pin" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>
-          <span class="font-semibold text-[var(--color-brand1)]">Address:</span>
-          {{ library.address || 'Nothing provided' }}
-        </p>
-      </div>
+      <!-- Address -->
+      <p class="flex items-center gap-2 text-base">
+        <lucide-icon name="map-pin" class="w-5 h-5 text-[var(--color-brand3)]"></lucide-icon>
+        <span class="font-semibold text-[var(--color-brand1)]">Address:</span>
+        {{ library.address || 'Nothing provided' }}
+      </p>
 
-      <!-- About Section -->
-      <div>
+      <!-- About / Description -->
+      <div class="w-full">
         <h3 class="text-lg font-semibold text-[var(--color-brand1)] mb-2">About</h3>
         <blockquote
-          class="text-gray-700 italic leading-relaxed bg-[var(--color-brand5)]/10 border-l-4 border-[var(--color-brand2)] pl-4 py-2 rounded-sm line-clamp-5"
+          class="text-gray-700 italic leading-relaxed bg-[var(--color-brand5)]/10 border-l-4 border-[var(--color-brand2)] pl-4 py-2 rounded-md"
         >
           “{{ library.description || 'No description provided.' }}”
         </blockquote>
       </div>
 
-      <!-- Actions -->
-      <div class="flex justify-end border-t border-[var(--color-brand3)]/20 pt-4">
+      <!-- Edit Button -->
+      <div class="w-full flex justify-end border-t border-[var(--color-brand3)]/20 pt-4 mt-2">
         @if (isLoggedIn() && libraryId == library.id) {
         <button
           (click)="handleOnEdit(library)"

@@ -20,7 +20,7 @@ export class BookCreateComponent implements OnInit {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
-  book: Book = {} as Book;
+  book = signal<Book>({} as Book);
   formMode: FormMode = FormMode.Add;
 
   // UI STATES
@@ -31,7 +31,7 @@ export class BookCreateComponent implements OnInit {
 
   ngOnInit(): void {
     const state = window.history.state as { book:Book, isCopy?:boolean };
-    if (state.book) this.book = state.book;
+    if (state.book) this.book.set(state.book);
     if (state.isCopy===true) this.formMode = FormMode.Copy;
 
     console.log('formmode: ', this.formMode);
@@ -65,7 +65,7 @@ export class BookCreateComponent implements OnInit {
         next: (response) => {
           this.toastService.success('Book created successfully');
           log('Book created successfully:', response);
-          book = response;
+          this.book.set({} as Book);
         },
         error: (err) => {
           this.toastService.error('Failed to create book');

@@ -7,7 +7,7 @@
 <div>
   <app-book-form-component
     [formMode]="formMode"
-    [book]="book"
+    [book]="book()"
     [isSubmitting]="loading"
     [submittingInfo]="loadingInfo"
     (create)="handleCreate($event)"

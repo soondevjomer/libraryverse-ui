@@ -14,6 +14,7 @@
   <div class="flex flex-col justify-between flex-1 p-4">
     <!-- Library Main Info -->
     <div class="space-y-2 flex-1">
+      <div class="flex justify-between">
       <h3
         class="font-bold text-[var(--color-brand1)] text-lg leading-tight truncate"
         [title]="library.name || 'Unnamed Library'"
@@ -22,8 +23,18 @@
           name="building"
           class="inline w-4 h-4 mr-1 text-[var(--color-brand2)]"
         ></lucide-icon>
-        {{ library.name || 'Unnamed Library' }}
+        <span class="font-medium truncate">{{ library.name || 'Unnamed Library' }}</span>
       </h3>
+
+      @if (library.roundedRating >= 1) {
+        <div class="flex items-center gap-1 text-[var(--color-brand2)] text-sm">
+          <lucide-icon name="star" class="w-4 h-4 text-amber-300 fill-amber-300"></lucide-icon>
+          <span class="font-medium text-amber-500">
+            {{ library.roundedRating }}
+          </span>
+        </div>
+      }
+      </div>
 
       <p class="text-sm text-gray-700 truncate" [title]="library.ownerName || 'Unknown'">
         <lucide-icon name="user" class="inline w-4 h-4 mr-1 text-[var(--color-brand3)]"></lucide-icon>

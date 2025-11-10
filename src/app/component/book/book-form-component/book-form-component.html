@@ -253,7 +253,7 @@
   </div>
 
   <!-- SUBMIT -->
-  <div class="pt-4 flex justify-start">
+  <div class="pt-4 flex justify-between">
     @if (!isSubmitting()) { @if (formMode == FormMode.Add) {
     <button
       (click)="onCreate()"
@@ -278,7 +278,17 @@
     >
       Copy
     </button>
-    } } @else {
+    }
+    <button
+      type="button"
+      class="px-6 py-2 rounded bg-red-500 text-white hover:bg-[var(--color-brand3)] transition"
+      (click)="onResetForm()"
+      [disabled]="isSubmitting()"
+    >
+      Reset
+    </button>
+
+    } @else {
     <div
       class="px-6 py-2 bg-[var(--color-brand2)] text-white font-semibold rounded-lg flex justify-center items-center gap-2 animate-pulse"
     >

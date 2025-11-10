@@ -86,7 +86,7 @@ export class LibraryFormComponent implements OnInit {
     if (!input.files?.length) return;
 
     const file = input.files[0];
-    const allowedTypes = ['image/jpeg', 'image/png'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     const sizeMB = file.size / (1024 * 1024);
     const minSizeMb = 0.001;
     const maxSizeMb = 10;
@@ -99,7 +99,7 @@ export class LibraryFormComponent implements OnInit {
     }
 
     if (!allowedTypes.includes(file.type)) {
-      this.fileError = 'Only JPG, PNG formats are allowed.';
+      this.fileError = 'Only JPG, PNG, WEBP formats are allowed.';
       this.previewUrl.set(null);
       this.libraryForm.get('libraryCover')?.reset();
       return;

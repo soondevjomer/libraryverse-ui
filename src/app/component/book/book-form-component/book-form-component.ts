@@ -113,6 +113,29 @@ export class BookFormComponent implements OnInit {
     this.authors = [...(book.bookDetail?.authors ?? [])];
   }
 
+  onResetForm():void {
+    this.bookForm.reset({
+      id: 0,
+      isbn: '',
+      bookDetail: {
+        id: 0,
+        title: '',
+        seriesTitle: '',
+        description: '',
+        bookCover: null,
+        bookThumbnailCover: null,
+        genres: [],
+        authors: [],
+        publisher: '',
+        publishedYear: new Date().getFullYear(),
+        price: 0,
+        quantity: 0,
+      },
+    });
+    this.genres = [];
+    this.authors = [];
+  }
+
   // ---------- CRUD Emitters ----------
   onCreate() {
     this.submitted = true;
@@ -223,7 +246,7 @@ export class BookFormComponent implements OnInit {
 
     const file = input.files[0];
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    const minSizeMb = 0.05;
+    const minSizeMb = 0.001;
     const maxSizeMb = 10;
 
     if (!allowedTypes.includes(file.type)) {
@@ -252,6 +275,7 @@ export class BookFormComponent implements OnInit {
     const ext = mimeType.split('/')[1]; // "png", "jpeg", etc.
 
     this.croppedFile = new File([e.blob], `book-cover.${ext}`, { type: mimeType });
+    this.fileError=null;
 
     log('croppedFIle ', this.croppedFile);
     const reader = new FileReader();

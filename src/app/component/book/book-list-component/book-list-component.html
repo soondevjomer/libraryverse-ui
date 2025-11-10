@@ -84,10 +84,29 @@
         </span>
       </div>
 
+      <!-- GENRES -->
+      <p class="text-sm text-gray-700 leading-tight">
+        <span class="font-medium">Genres:</span>
+        {{ formatGenres(book) }}
+      </p>
+
       <!-- AUTHORS -->
       <p class="text-sm text-gray-700 leading-tight">
         <span class="font-medium">Authors:</span>
         {{ formatAuthors(book) }}
+      </p>
+
+      <p
+        (click)="goToLibrary(book.libraryId)"
+        class="text-sm text-gray-700 truncate flex items-center gap-1"
+        [title]="book.libraryName || 'Unknown'"
+      >
+        <lucide-icon name="library" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
+        <span class="font-medium">Library:</span>
+        <span
+          class="hover:cursor-pointer hover:underline hover:underline-offset-2 hover:text-brand3"
+          >{{ book.libraryName || 'Unknown' }}</span
+        >
       </p>
 
       <!-- STOCK INFO -->
@@ -163,6 +182,7 @@
         <th class="px-6 py-3 font-semibold">Author</th>
         <th class="px-6 py-3 font-semibold">Stock</th>
         <th class="px-6 py-3 font-semibold">Price</th>
+        <th class="px-6 py-3 font-semibold">Library</th>
         <th class="px-6 py-3 font-semibold text-center">Actions</th>
       </tr>
     </thead>
@@ -181,40 +201,10 @@
           {{ formatAuthors(book) }}
         </td>
 
-        <td class="px-6 py-3 align-top">
-          @if (book.inventory) { @if (role() == Role.Librarian) {
-          <div class="text-xs text-gray-700 leading-snug">
-            <div class="grid grid-cols-[auto_1fr] items-start gap-x-2">
-              @if (viewMode.toString() == 'card') {
-              <lucide-icon name="package" class="w-4 h-4 text-[var(--color-brand2)]"></lucide-icon>
-              } @else {
-              <span></span>
-              }
-              <span [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''"
-                ><span class="font-medium">Available:</span>
-                {{ book.inventory.availableStock }}</span
-              >
-              <span></span>
-              <span>Reserved: {{ book.inventory.reservedStock }}</span>
-              <span></span>
-              <span>Shipped: {{ book.inventory.shipped }}</span>
-              <span></span>
-              <span>Delivered: {{ book.inventory.delivered }}</span>
-            </div>
-          </div>
-          } @else {
-          <div class="text-sm text-gray-700 flex items-center">
-            <lucide-icon
-              name="package"
-              class="inline w-4 h-4 text-[var(--color-brand2)] mr-1"
-            ></lucide-icon>
-            <span [ngClass]="book.inventory.availableStock <= 0 ? 'text-red-500' : ''">{{
-              book.inventory.availableStock
-            }}</span>
-          </div>
-          } } @else {
-          <span class="italic text-gray-400 text-xs">No stock</span>
-          }
+        <td class="px-6 py-3" [ngClass]="book.inventory?.availableStock != 0 ? '' : 'text-red-500'">
+          {{
+            book.inventory?.availableStock != 0 ? book.inventory?.availableStock : 'Out of stock'
+          }}
         </td>
 
         <td class="px-6 py-3">
@@ -223,6 +213,19 @@
               ? (book.bookDetail.price | currency : 'PHP' : 'symbol' : '1.2-2')
               : 'N/A'
           }}
+        </td>
+
+        <td class="px-6 py-3">
+          <p
+            (click)="goToLibrary(book.libraryId)"
+            class="text-sm text-gray-700 truncate flex items-center gap-1"
+            [title]="book.libraryName || 'Unknown'"
+          >
+            <span
+              class="hover:cursor-pointer hover:underline hover:underline-offset-2 hover:text-brand3"
+              >{{ book.libraryName || 'Unknown' }}</span
+            >
+          </p>
         </td>
 
         <td class="px-6 py-3">

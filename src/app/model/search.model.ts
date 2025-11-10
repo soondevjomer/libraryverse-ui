@@ -7,7 +7,7 @@ export interface SearchBy {
 }
 
 export enum SortBy {
-    CREATED_DATE = "Date Created",
+    CREATED_DATE = "Date Added",
     TITLE = "Title",
     NAME = "Name",
     POPULAR = "Popularity",

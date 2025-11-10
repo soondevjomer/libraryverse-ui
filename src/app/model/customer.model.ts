@@ -5,6 +5,7 @@ export interface Customer {
     email?: string,
     name: string,
     image?: string | File,
+    imageThumbnail?: string | File,
 }
 
 export interface CustomerCountAndTopStat {

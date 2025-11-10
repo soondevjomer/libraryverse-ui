@@ -6,6 +6,7 @@ import { LucideAngularModule } from 'lucide-angular';
 import { Profile } from '../../../model/profile.model';
 import { AuthService } from '../../../service/auth-service';
 import { ProfileService } from '../../../service/profile-service';
+import { Role } from '@/model/auth.model';
 
 @Component({
   selector: 'app-profile-component',
@@ -21,6 +22,9 @@ export class ProfileComponent implements OnInit {
   private profileService = inject(ProfileService);
 
   baseUrl = environment.apiBaseUrl;
+  role = this.authService.userClaim?.role;
+
+  Role = Role;
 
   // REACTIVE STATE
   loading = signal(false);

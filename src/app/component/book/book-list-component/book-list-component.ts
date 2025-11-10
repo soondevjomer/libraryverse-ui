@@ -213,7 +213,7 @@ toggleSortDirection() {
   }
 
   handleOnEdit(book: Book) {
-    log('edit book with id');
+  log('edit book with id');
     this.router.navigate(['books/edit', book.id], { state: { book } });
   }
 
@@ -236,6 +236,10 @@ toggleSortDirection() {
   }
 
   handleToLibrary(libraryId: number) {
+    this.router.navigate(['libraries', libraryId]);
+  }
+
+  goToLibrary(libraryId: number) {
     this.router.navigate(['libraries', libraryId]);
   }
 }
