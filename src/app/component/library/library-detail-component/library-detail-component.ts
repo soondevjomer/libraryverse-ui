@@ -74,8 +74,8 @@ export class LibraryDetailComponent implements OnInit {
   private loadLibraryById(libraryId: number): Observable<Library> {
     return this.libraryService.getLibraryById(libraryId).pipe(
       tap(() => this.loading.set(false)),
-      catchError((error) => {
-        error('Error loading library:', error);
+      catchError((err) => {
+        error('Error loading library:', err);
         this.errorMessage.set('Failed to load library.');
         this.loading.set(false);
         return of({} as Library);
@@ -115,7 +115,7 @@ export class LibraryDetailComponent implements OnInit {
   }
 
   handleOnEdit(library: Library) {
-    this.router.navigate(['libraries/edit', library.id], { state: { library:library } });
+    this.router.navigate(['libraries/edit', library.id], { state: { library: library } });
   }
 
   handleOnBookEdit(book: Book) {
@@ -186,5 +186,10 @@ export class LibraryDetailComponent implements OnInit {
   formatGenres(book: Book): string {
     const genres = book.bookDetail?.genres;
     return genres && genres.length ? genres.join(', ') : 'N/A';
+  }
+
+  onImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = this.defaultLibraryCover;
   }
 }

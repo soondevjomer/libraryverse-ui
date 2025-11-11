@@ -20,9 +20,10 @@
     <!-- Cover Image -->
     <div class="relative w-full h-56 md:h-72 bg-[var(--color-brand6)]">
       <img
-      [src]="library.libraryCover ? imageUrl + library.libraryCover : defaultLibraryCover"
+        [src]="library.libraryCover ? imageUrl + library.libraryCover : defaultLibraryCover"
         alt="{{ library.name }}"
         class="w-full h-full object-cover"
+        (error)="onImageError($event)"
       />
     </div>
 
