@@ -15,6 +15,7 @@ import { AuthService } from '../../../service/auth-service';
 import { OrderService } from '../../../service/order-service';
 import { ToastService } from '../../../service/toast-service';
 import { LucideAngularModule } from 'lucide-angular';
+import { ProfileService } from '@/service/profile-service';
 
 @Component({
   selector: 'app-payment-component',
@@ -30,6 +31,7 @@ export class PaymentComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private toastService = inject(ToastService);
+  private profileService = inject(ProfileService);
 
   // SIGNALS
   submitted = signal<boolean>(false);
@@ -44,8 +46,8 @@ export class PaymentComponent implements OnInit {
   paymentMethodCtrl = new FormControl(PaymentMethod.COD);
   paymentMethodKeys = Object.keys(PaymentMethod) as Array<keyof typeof PaymentMethod>;
 
-  address: string = this.authService.userClaim?.address ?? '';
-  contactNumber: string = this.authService.userClaim?.contactNumber ?? '';
+  address: string = this.profileService.profile()?.address?.toString() ?? '';
+  contactNumber: string = this.profileService.profile()?.contactNumber?.toString()  ?? '';
 
   ngOnInit(): void {
     this.buildPaymentForm();
