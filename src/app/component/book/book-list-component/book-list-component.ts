@@ -120,9 +120,10 @@ export class BookListComponent implements OnInit {
 
   private loadBooks(filter: SearchFilter, forceRefresh = false) {
     this.loading.set(true);
-    this.bookStoreService.getBooks(filter, forceRefresh)
-    .pipe(finalize(()=>this.loading.set(false)))
-    .subscribe();
+    this.bookStoreService
+      .getBooks(filter, forceRefresh)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe();
   }
 
   // UI HANDLERS
@@ -137,7 +138,7 @@ export class BookListComponent implements OnInit {
     this.loadBooks(this.createSearchFilter(0), true);
   }
 
-toggleSortDirection() {
+  toggleSortDirection() {
     const current = this.filterForm.get('sortDirection')?.value;
     const newDir = current === 'ASC' ? 'DESC' : 'ASC';
     this.filterForm.patchValue({ sortDirection: newDir });
@@ -156,7 +157,7 @@ toggleSortDirection() {
   }
 
   private reload(page = 0) {
-    this.loadBooks(this.createSearchFilter(page));
+    this.loadBooks(this.createSearchFilter(page), true);
   }
 
   handlePageChange(pageNumber: number) {
@@ -194,7 +195,7 @@ toggleSortDirection() {
     }
 
     const quantity = book.inventory?.availableStock;
-    if (quantity==undefined || quantity<=0 || quantity==null) {
+    if (quantity == undefined || quantity <= 0 || quantity == null) {
       this.toastService.info('No available stock to buy');
       return;
     }
@@ -213,13 +214,13 @@ toggleSortDirection() {
   }
 
   handleOnEdit(book: Book) {
-  log('edit book with id');
+    log('edit book with id');
     this.router.navigate(['books/edit', book.id], { state: { book } });
   }
 
   handleOnCopy(book: Book) {
     log('Copying book:', book);
-    this.router.navigate(['books/create'], { state: { book, isCopy:true } });
+    this.router.navigate(['books/create'], { state: { book, isCopy: true } });
   }
 
   // safe formatting helpers — put these inside BookListComponent
