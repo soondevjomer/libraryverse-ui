@@ -12,7 +12,7 @@ import { Customer } from '../../../model/customer.model';
 })
 export class CustomerDetailComponent implements OnInit {
   customer!: Customer;
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
 
   ngOnInit(): void {
     this.customer = window.history.state['customer'];
