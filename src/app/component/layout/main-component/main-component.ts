@@ -41,7 +41,7 @@ export class MainComponent {
 
   profile = this.profileService.profile;
 
-  baseUrl = environment.apiBaseUrl;
+  imageUrl = environment.imageUrl;
 
   filteredNavItems = computed(() => {
     const currentRole = this.role();

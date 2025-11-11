@@ -28,6 +28,8 @@ export class BookDetailComponent implements OnInit {
   private toastService = inject(ToastService);
 
   imageUrl = environment.imageUrl;
+  defaultBookCover = environment.defaultBookCover;
+
   role = this.authService._role();
   Role = Role;
 

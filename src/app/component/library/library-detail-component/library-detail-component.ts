@@ -71,6 +71,8 @@ export class LibraryDetailComponent implements OnInit {
       return;
     }
 
+    log('library get from url: ', libraryId);
+
     const cachedLibrary = window.history.state['library'] as Library | undefined;
     if (cachedLibrary) {
       this.library.set(cachedLibrary);

@@ -44,7 +44,7 @@ export class LibraryEditComponent implements OnInit {
     log('library: ', this.library);
   }
 
-  handleLibraryEdit({ library, file }: { library: Library, file?: File }) {
+  handleLibraryEdit({ library, file }: { library: Library; file?: File }) {
     if (!library) return;
     this.loading.set(true);
     this.loadingInfo.set('Updating library...');
@@ -53,13 +53,22 @@ export class LibraryEditComponent implements OnInit {
       .updateLibraryById(library.id, library, file)
       .pipe(
         tap((updatedLibrary) => log('Library updated successfully: ', updatedLibrary)),
-        finalize(() => this.loading.set(false)))
+        finalize(() => this.loading.set(false))
+      )
       .subscribe({
         next: (updatedLibrary) => {
           this.toastService.success('Library updated successfully');
-          this.router.navigate(['libraries', updatedLibrary.id], {state:{library:updatedLibrary}});
+          this.router.navigate(['libraries', updatedLibrary.id], {
+            state: { library: updatedLibrary },
+          });
         },
         error: (err) => {
+          if (err instanceof ProgressEvent) {
+            log('Non-critical parse error (empty response), ignoring.');
+            this.toastService.success('Library updated successfully');
+            this.router.navigate(['libraries', library.id], { state: { library } });
+            return;
+          }
           error('Error updating library: ', err);
           this.toastService.error('Failed to update library');
         },

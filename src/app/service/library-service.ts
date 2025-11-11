@@ -33,9 +33,15 @@ export class LibraryService {
   updateLibraryById(libraryId: number, libraryReq: LibraryRequest, file?: File | Blob): Observable<Library> {
     log('update library by id');
     const payload = structuredClone(libraryReq);
+
+    log('library info for updating:Library ID ', libraryId);
+    log('library info for updating:Library ', libraryReq);
+    log('library info for updating:File ', file);
+    log('Payload: ', payload);
   
     // Ensure no File or nested object is serialized incorrectly
     if (payload.libraryCover instanceof File) {
+      log('payload is instance of file');
       payload.libraryCover = '';
     }
 

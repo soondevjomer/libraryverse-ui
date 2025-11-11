@@ -20,12 +20,8 @@
   >
     <!-- Book Cover -->
     <div class="w-full md:w-1/3 flex items-center justify-center p-6 bg-[var(--color-brand6)]">
-    <img
-        [src]="
-          book.bookDetail.bookCover
-            ? imageUrl + book.bookDetail.bookCover
-            : 'default-book-cover.webp'
-        "
+      <img
+        [src]="book.bookDetail.bookCover ? imageUrl + book.bookDetail.bookCover : defaultBookCover"
         alt="{{ book.bookDetail.title }}"
         class="max-h-[700px] w-auto object-contain rounded-xl shadow-md transition-transform duration-300 hover:scale-[1.02]"
       />
@@ -98,7 +94,7 @@
         </p>
 
         <div class="flex gap-3">
-          @if (role == Role.Librarian) {
+          @if (isLoggedIn()) { @if (role == Role.Librarian) {
           <button
             (click)="handleOnEdit(book)"
             class="px-5 py-2 bg-[var(--color-brand1)] text-white font-medium rounded-lg hover:bg-[var(--color-brand3)] transition-all shadow-sm"
@@ -112,7 +108,7 @@
           >
             Copy
           </button>
-          } @if (role==Role.Reader) {
+          } } @if (role==Role.Reader) {
           <button
             (click)="handleOnAddToCart(book)"
             class="px-5 py-2 bg-[var(--color-brand2)] text-white font-medium rounded-lg hover:bg-[var(--color-brand3)] transition-all shadow-sm"

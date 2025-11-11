@@ -205,7 +205,7 @@ toggleSortDirection() {
         bookId: book.id,
         bookName: book.bookDetail.title,
         price: book.bookDetail.price,
-        quantity: quantity,
+        quantity: 1,
         maxQuantity: book.inventory?.availableStock ?? 0,
       },
     ];
