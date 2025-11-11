@@ -52,7 +52,7 @@ export class LibraryService {
       formData.append('file', fileWithType);
     }
 
-    return this.http.put<Library>(`${this.baseUrl}/libraries/${libraryId}`, formData);
+    return this.http.post<Library>(`${this.baseUrl}/libraries/${libraryId}`, formData);
   }
 
   getLibraryInfo(libraryId:number):Observable<LibraryInfo> {
