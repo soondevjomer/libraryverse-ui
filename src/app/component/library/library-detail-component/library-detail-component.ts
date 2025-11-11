@@ -38,6 +38,9 @@ export class LibraryDetailComponent implements OnInit {
   library$!: Observable<Library>;
   books$!: Observable<Page<Book>>;
 
+  // Data
+  library = signal<Library | null>(null);
+
   // UI States
   loading = signal<boolean>(false);
   errorMessage = signal<string>('');
@@ -63,24 +66,44 @@ export class LibraryDetailComponent implements OnInit {
     const libraryId = Number(this.activatedRoute.snapshot.paramMap.get('libraryId'));
     if (!libraryId) {
       this.errorMessage.set('Invalid library ID');
+      this.toastService.error('Invalid library id');
+      this.router.navigate(['libraries']);
       return;
     }
 
-    this.loading.set(true);
-    this.library$ = this.loadLibraryById(libraryId);
+    const cachedLibrary = window.history.state['library'] as Library | undefined;
+    if (cachedLibrary) {
+      this.library.set(cachedLibrary);
+      log('cached library loaded: ', cachedLibrary);
+    }
+
+    this.fetchLibrary(libraryId, cachedLibrary);
     this.loadBooks(libraryId);
   }
 
-  private loadLibraryById(libraryId: number): Observable<Library> {
-    return this.libraryService.getLibraryById(libraryId).pipe(
-      tap(() => this.loading.set(false)),
-      catchError((err) => {
-        error('Error loading library:', err);
-        this.errorMessage.set('Failed to load library.');
-        this.loading.set(false);
-        return of({} as Library);
-      })
-    );
+  private fetchLibrary(libraryId: number, cached?: Library) {
+    this.loading.set(true);
+    this.libraryService
+      .getLibraryById(libraryId)
+      .pipe(
+        tap((freshLibrary) => {
+          this.loading.set(false);
+
+          if (!cached || JSON.stringify(cached) !== JSON.stringify(freshLibrary)) {
+            log('Fresh library data fetched, overwriting view...');
+            this.library.set(freshLibrary);
+          } else {
+            log('Fetched data matches cached state — no overwrite needed');
+          }
+        }),
+        catchError((err) => {
+          error('Error loading library:', err);
+          this.errorMessage.set('Failed to load library.');
+          this.loading.set(false);
+          return of({} as Library);
+        })
+      )
+      .subscribe();
   }
 
   private loadBooks(libraryId: number, page: number = 0) {

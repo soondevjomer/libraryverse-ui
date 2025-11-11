@@ -1,7 +1,7 @@
-import { log } from '@/utils/logger';
+import { error, log } from '@/utils/logger';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 import { FormMode } from '../../../model/auth.model';
 import { Library } from '../../../model/library.model';
 import { AuthService } from '../../../service/auth-service';
@@ -51,15 +51,16 @@ export class LibraryEditComponent implements OnInit {
 
     this.libraryService
       .updateLibraryById(library.id, library, file)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(
+        tap((updatedLibrary) => log('Library updated successfully: ', updatedLibrary)),
+        finalize(() => this.loading.set(false)))
       .subscribe({
         next: (updatedLibrary) => {
-          log('Library updated successfully: ', updatedLibrary);
           this.toastService.success('Library updated successfully');
-          this.router.navigate(['libraries', updatedLibrary.id]);
+          this.router.navigate(['libraries', updatedLibrary.id], {state:{library:updatedLibrary}});
         },
-        error: (error) => {
-          error('Error updating library: ', error);
+        error: (err) => {
+          error('Error updating library: ', err);
           this.toastService.error('Failed to update library');
         },
       });

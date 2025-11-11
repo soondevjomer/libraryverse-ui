@@ -162,7 +162,7 @@ export class LibraryListComponent implements OnInit {
   }
 
   handleOnView(library: Library) {
-    if (library) this.router.navigate(['libraries', library.id]);
+    if (library) this.router.navigate(['libraries', library.id],{state:{library}});
   }
 
   handleOnEdit(library: Library) {

@@ -11,7 +11,7 @@
   </h2>
 </div>
 
-@if (library$ | async; as library) { @if (library && library.id) {
+@if (library(); as library) { @if (library && library.id) {
 <div class="max-w-6xl mx-auto px-4 py-8 space-y-10">
   <!-- Library Header Card -->
   <div
