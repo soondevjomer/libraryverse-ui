@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { environment } from '@env/environment';
-import { CheckRequest, Profile } from '../model/profile.model';
+import { CheckRequest, Profile, ChangePasswordRequest } from '../model/profile.model';
 import { Observable } from 'rxjs';
 import { log } from '@/utils/logger';
 import { AuthService } from './auth-service';
@@ -98,5 +98,9 @@ export class ProfileService {
 
   getProfile(): Observable<Profile> {
     return this.http.get<Profile>(`${this.baseUrl}/profile`);
+  }
+
+  changePassword(changePasswordRequest:ChangePasswordRequest): Observable<{result:boolean}> {
+    return this.http.post<{result:boolean}>(`${this.baseUrl}/profile/change-password`, changePasswordRequest);
   }
 }

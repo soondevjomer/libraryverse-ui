@@ -169,6 +169,14 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
+        path: 'profile/change-password',
+        loadComponent: () =>
+          import('./component/profile/change-password-component/change-password-component').then(
+            (m) => m.ChangePasswordComponent
+          ),
+        canActivate: [authGuard],
+      },
+      {
         path: 'profile/edit',
         loadComponent: () =>
           import('./component/profile/profile-edit-component/profile-edit-component').then(

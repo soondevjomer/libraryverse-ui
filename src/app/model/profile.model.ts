@@ -13,3 +13,8 @@ export interface CheckRequest {
     request:string,
     current?:string,
 }
+
+export interface ChangePasswordRequest {
+    current:string,
+    newPassword:string,
+}

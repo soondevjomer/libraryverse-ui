@@ -67,4 +67,8 @@ export class ProfileComponent implements OnInit {
   goEditProfile() {
     this.router.navigate(['profile/edit'], { state: { profile: this.profile() } });
   }
+
+  goChangePassword() {
+    this.router.navigate(['profile/change-password']);
+  }
 }
