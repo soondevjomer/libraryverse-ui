@@ -95,6 +95,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((httpError: HttpErrorResponse) => {
+      if (httpError.status === 0) {
+        error("Server may be down. Network error detected.", httpError);
+        router.navigate(['server-down']);
+      }
       if (httpError.status === 401) {
         log('%c[AuthInterceptor] 401 detected → trying refresh', 'color: orange');
 

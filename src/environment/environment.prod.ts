@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  enableLogging:true,
+  enableLogging:false,
   apiBaseUrl: 'https://libraryverse-api-production.up.railway.app',
   imageUrl: '',
   defaultBookCover: 'default-bookcover.png',
