@@ -1,6 +1,7 @@
 # Libraryverse
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.0.
+Status: This front-end is currently down since the creator have already consume the free tier from Netlify.
 
 ## Development server
 
