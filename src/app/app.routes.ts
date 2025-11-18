@@ -5,6 +5,7 @@ import { ForbiddenComponent } from './component/layout/forbidden-component/forbi
 import { MainComponent } from './component/layout/main-component/main-component';
 import { authGuard } from './guard/auth-guard';
 import { Role } from './model/auth.model';
+import { ServerDownComponent } from './component/layout/server-down-component/server-down-component';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,11 @@ export const routes: Routes = [
         path: 'forbidden',
         component: ForbiddenComponent,
       },
+      {
+        path: 'server-down',
+        component: ServerDownComponent,
+      },
+
       {
         path: 'register',
         component: RegisterComponent,
